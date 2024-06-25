@@ -1,15 +1,10 @@
 {
-    "name": "algoyounes/laravel-package-skeleton",
-    "description": "Laravel Package Skeleton for streamlined package development",
+    "name": "algoyounes/laravel-idempotency",
+    "description": "Laravel Idempotency Middleware package to prevent duplicate requests",
     "keywords": [
-        "laravel",
-        "package",
-        "skeleton",
-        "skeleton-package",
-        "laravel package",
-        "laravel package skeleton",
-        "package skeleton",
-        "package development"
+        "laravel idempotency",
+        "php idempotency",
+        "idemopotency"
     ],
     "type": "library",
     "license": "MIT",
@@ -21,7 +16,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "AlgoYounes\\Skeleton\\": "src/"
+            "AlgoYounes\\Idempotency\\": "src/"
         },
         "files": [
             "./helpers.php"
@@ -29,7 +24,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "AlgoYounes\\Skeleton\\Tests\\": "tests"
+            "AlgoYounes\\Idempotency\\Tests\\": "tests"
         }
     },
     "require": {
