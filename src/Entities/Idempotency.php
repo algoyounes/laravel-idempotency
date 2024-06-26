@@ -68,6 +68,9 @@ class Idempotency
         return $this->idempotentRequest;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return [

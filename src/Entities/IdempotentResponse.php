@@ -6,6 +6,9 @@ use Illuminate\Http\Response;
 
 final class IdempotentResponse
 {
+    /**
+     * @param  array<string, list<string|null>>  $headers
+     */
     public function __construct(
         private readonly string $body,
         private readonly int $status,
@@ -13,6 +16,9 @@ final class IdempotentResponse
     ) {
     }
 
+    /**
+     * @param  array{body: string, status: int, headers: array<string, list<string|null>>}  $attributes
+     */
     public static function createFromArray(array $attributes): self
     {
         return new self(
@@ -43,11 +49,17 @@ final class IdempotentResponse
         return $this->status;
     }
 
+    /**
+     * @return array<string, list<string|null>>
+     */
     public function getHeaders(): array
     {
         return $this->headers;
     }
 
+    /**
+     * @return array{body: string, status: int, headers: array<string, list<string|null>>}
+     */
     public function toArray(): array
     {
         return [

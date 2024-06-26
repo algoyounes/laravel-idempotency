@@ -25,7 +25,7 @@ class IdempotencyMiddleware
     /**
      * @throws LockWaitExceededException
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
         if ($this->isNotEnabled() || $this->isEnforcedVerb($request)) {
             return $next($request);
@@ -67,17 +67,19 @@ class IdempotencyMiddleware
 
     private function isNotEnabled(): bool
     {
-        return IdempotencyConfig::get(IdempotencyConfig::ENABLED_KEY) === false;
+        return (bool) IdempotencyConfig::get(IdempotencyConfig::ENABLED_KEY, false) === false;
     }
 
     private function isEnforcedVerb(Request $request): bool
     {
-        return in_array($request->getMethod(), IdempotencyConfig::get(IdempotencyConfig::ENFORCED_VERBS_KEY), true);
+        return in_array($request->getMethod(), (array) IdempotencyConfig::get(IdempotencyConfig::ENFORCED_VERBS_KEY), true);
     }
 
     private function getIdempotencyKey(Request $request): ?string
     {
-        return $request->header(IdempotencyConfig::get(IdempotencyConfig::IDEMPOTENCY_HEADER_KEY));
+        $idempotencyKey = $request->header(IdempotencyConfig::get(IdempotencyConfig::IDEMPOTENCY_HEADER_KEY));
+
+        return is_string($idempotencyKey) ? $idempotencyKey : null;
     }
 
     private function processIdempotentRequest(Idempotency $idempotency, Request $request, Closure $next): Response
@@ -96,7 +98,7 @@ class IdempotencyMiddleware
             $idempotency->getIdempotentResponse()->getStatus(),
             [
                 ...$idempotency->getIdempotentResponse()->getHeaders(),
-                IdempotencyConfig::get(IdempotencyConfig::RELAYED_HEADER_KEY) => $idempotency->getIdempotencyKey()
+                IdempotencyConfig::get(IdempotencyConfig::RELAYED_HEADER_KEY) => $idempotency->getIdempotencyKey(),
             ]
         );
     }
@@ -111,10 +113,6 @@ class IdempotencyMiddleware
         $existingChecksum = $idempotentRequest->getChecksum();
         $currentChecksum = IdempotentRequest::createFromRequest($request)->getChecksum();
 
-        if ($existingChecksum->equals($currentChecksum)) {
-            return false;
-        }
-
-        return true;
+        return $existingChecksum->equals($currentChecksum) === false;
     }
 }

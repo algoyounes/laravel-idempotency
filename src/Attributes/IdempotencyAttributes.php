@@ -43,6 +43,9 @@ class IdempotencyAttributes extends AbstractAttributes
         return $this;
     }
 
+    /**
+     * @return array<string, array<string, mixed>>
+     */
     public function getAttributes(): array
     {
         return [

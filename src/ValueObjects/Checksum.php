@@ -2,7 +2,9 @@
 
 namespace AlgoYounes\Idempotency\ValueObjects;
 
-final class Checksum
+use Stringable;
+
+final class Checksum implements Stringable
 {
     private const HASHING_ALGORITHM = 'sha256';
 
@@ -10,12 +12,15 @@ final class Checksum
     {
     }
 
-    public static function createFromPayload(array $payload): self
+    /**
+     * @param  array<string, mixed>  $attributes
+     */
+    public static function createFromAttributes(array $attributes): self
     {
         return new self(
             hash(
                 self::HASHING_ALGORITHM,
-                json_encode($payload)
+                (string) json_encode($attributes, JSON_PARTIAL_OUTPUT_ON_ERROR)
             )
         );
     }

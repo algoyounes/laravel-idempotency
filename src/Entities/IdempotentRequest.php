@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 
 final class IdempotentRequest
 {
+    /**
+     * @param  array<string, list<string|null>>  $headers
+     */
     public function __construct(
         private readonly string $body,
         private readonly array $headers,
@@ -15,6 +18,9 @@ final class IdempotentRequest
     ) {
     }
 
+    /**
+     * @param  array{body: string, headers: array<string, list<string|null>>, path: string, checksum: Checksum}  $attributes
+     */
     public static function createFromArray(array $attributes): self
     {
         return new self(
@@ -33,7 +39,7 @@ final class IdempotentRequest
             'headers' => $request->headers->all(),
         ];
 
-        $attributes['checksum'] = Checksum::createFromPayload($attributes);
+        $attributes['checksum'] = Checksum::createFromAttributes($attributes);
 
         return self::createFromArray($attributes);
     }
@@ -43,6 +49,9 @@ final class IdempotentRequest
         return $this->body;
     }
 
+    /**
+     * @return array<string, list<string|null>>
+     */
     public function getHeaders(): array
     {
         return $this->headers;
@@ -58,6 +67,9 @@ final class IdempotentRequest
         return $this->checksum;
     }
 
+    /**
+     * @return array{body: string, headers: array<string, list<string|null>>, path: string, checksum: Checksum}
+     */
     public function toArray(): array
     {
         return [

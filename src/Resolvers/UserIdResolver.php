@@ -29,14 +29,17 @@ readonly class UserIdResolver
         return $this->getDefaultUserId();
     }
 
+    /**
+     * @param  array<class-string, string>  $customResolver
+     */
     private function getCustomUserId(array $customResolver): string
     {
         [$class, $method] = $customResolver;
 
-        return make($class)->{$method}();
+        return app($class)->{$method}();
     }
 
-    private function getDefaultUserId(): ?string
+    private function getDefaultUserId(): string
     {
         return $this->auth->check() ? (string) $this->auth->id() : NullUserIdResolver::resolve();
     }

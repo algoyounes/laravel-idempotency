@@ -4,7 +4,7 @@ namespace AlgoYounes\Idempotency\Config;
 
 // TODO: Add helper methods to get config values in the helpers.php file
 
-class IdempotencyConfig
+final class IdempotencyConfig
 {
     // Idempotency config keys
     public const ENABLED_KEY = 'enabled';
@@ -21,8 +21,11 @@ class IdempotencyConfig
     public const CACHE_TTL_KEY = 'cache.ttl';
     public const CACHE_STORE_KEY = 'cache.store';
 
-    public static function get(string $key, $default = null)
+    /**
+     * @return array<string>|bool|int|string|null
+     */
+    public static function get(string $key, mixed $default = null)
     {
-        return config(sprintf("idempotency.%s", $key), $default);
+        return config(sprintf('idempotency.%s', $key), $default);
     }
 }

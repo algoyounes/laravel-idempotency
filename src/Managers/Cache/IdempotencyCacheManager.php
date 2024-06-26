@@ -27,7 +27,7 @@ class IdempotencyCacheManager
 
     private function getMaxLockWaitTime(): int
     {
-        return IdempotencyConfig::get(IdempotencyConfig::MAX_LOCK_WAIT_TIME_KEY, self::DEFAULT_MAX_LOCK_WAIT_TIME);
+        return (int) IdempotencyConfig::get(IdempotencyConfig::MAX_LOCK_WAIT_TIME_KEY, self::DEFAULT_MAX_LOCK_WAIT_TIME);
     }
 
     public function hasIdempotency(string $idempotencyKey, string $userId): bool
@@ -37,7 +37,12 @@ class IdempotencyCacheManager
 
     public function getIdempotency(string $idempotencyKey, string $userId): ?Idempotency
     {
-        return $this->cacheRepository->get($this->getCacheKey($idempotencyKey, $userId));
+        $idempotency = $this->cacheRepository->get($this->getCacheKey($idempotencyKey, $userId));
+        if (! $idempotency instanceof Idempotency) {
+            return null;
+        }
+
+        return $idempotency;
     }
 
     public function setIdempotency(string $userId, Idempotency $idempotency): bool
@@ -45,18 +50,18 @@ class IdempotencyCacheManager
         return $this->cacheRepository->put(
             $this->getCacheKey($userId, $idempotency->getIdempotencyKey()),
             $idempotency,
-            IdempotencyConfig::get(IdempotencyConfig::CACHE_TTL_KEY, self::CACHE_TTL)
+            (int) IdempotencyConfig::get(IdempotencyConfig::CACHE_TTL_KEY, self::CACHE_TTL)
         );
     }
 
     public function acquireLock(string $idempotencyKey, string $userId): bool
     {
-        return $this->lockProvider
+        return (bool) $this->lockProvider
             ->lock(
                 $this->getCacheKey($idempotencyKey, $userId),
                 $this->getMaxLockWaitTime()
             )
-            ->get();
+            ->block($this->getMaxLockWaitTime());
     }
 
     public function releaseLock(string $idempotencyKey, string $userId): bool
