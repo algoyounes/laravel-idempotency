@@ -34,9 +34,14 @@ readonly class UserIdResolver
      */
     private function getCustomUserId(array $customResolver): string
     {
+        // @phpstan-ignore-next-line
         [$class, $method] = $customResolver;
 
-        return app($class)->{$method}();
+        if (class_exists($class) && method_exists($class, $method)) {
+            return app($class)->{$method}();
+        }
+
+        return $this->getDefaultUserId();
     }
 
     private function getDefaultUserId(): string

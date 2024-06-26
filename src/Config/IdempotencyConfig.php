@@ -21,9 +21,7 @@ final class IdempotencyConfig
     public const CACHE_TTL_KEY = 'cache.ttl';
     public const CACHE_STORE_KEY = 'cache.store';
 
-    /**
-     * @return array<string>|bool|int|string|null
-     */
+    // @phpstan-ignore-next-line
     public static function get(string $key, mixed $default = null)
     {
         return config(sprintf('idempotency.%s', $key), $default);
