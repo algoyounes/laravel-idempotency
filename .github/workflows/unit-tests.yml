@@ -55,5 +55,8 @@ jobs:
       - name: Run Lint Tests
         run: composer test:lint
 
+      - name: Run PHPStan
+        run: composer test:types
+
       - name: Run Pest Tests
         run: composer test:unit
