@@ -1,6 +1,6 @@
 <?php
 
-namespace AlgoYounes\Skeleton\Tests;
+namespace AlgoYounes\Idempotency\Tests;
 
 use PHPUnit\Framework\TestCase as BaseTestCase;
 
