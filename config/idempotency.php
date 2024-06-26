@@ -56,22 +56,10 @@ return [
     | This option defines how to handle duplicate requests.
     | Available options:
     | - replay: Sends the same response seen previously.
-    | - exception: Throws a DuplicateRequestException.
+    | - exception: Throws a DuplicateIdempotencyRequestException.
     |
     */
     'duplicate_handling' => 'replay',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Ignore Empty Idempotency Key
-    |--------------------------------------------------------------------------
-    |
-    | This option specifies whether to ignore requests without an idempotency key.
-    | Setting this to false will throw a MissingIdempotencyKeyException if no key
-    | is supplied.
-    |
-    */
-    'ignore_empty_key' => false,
 
     /*
     |--------------------------------------------------------------------------

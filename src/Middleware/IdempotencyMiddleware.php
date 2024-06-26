@@ -6,6 +6,7 @@ use AlgoYounes\Idempotency\Attributes\IdempotencyAttributes;
 use AlgoYounes\Idempotency\Config\IdempotencyConfig;
 use AlgoYounes\Idempotency\Entities\Idempotency;
 use AlgoYounes\Idempotency\Entities\IdempotentRequest;
+use AlgoYounes\Idempotency\Exceptions\DuplicateIdempotencyRequestException;
 use AlgoYounes\Idempotency\Exceptions\LockWaitExceededException;
 use AlgoYounes\Idempotency\Managers\IdempotencyManager;
 use AlgoYounes\Idempotency\Resolvers\UserIdResolver;
@@ -23,7 +24,7 @@ class IdempotencyMiddleware
     }
 
     /**
-     * @throws LockWaitExceededException
+     * @throws LockWaitExceededException|DuplicateIdempotencyRequestException
      */
     public function handle(Request $request, Closure $next): Response
     {
@@ -82,6 +83,9 @@ class IdempotencyMiddleware
         return is_string($idempotencyKey) ? $idempotencyKey : null;
     }
 
+    /**
+     * @throws DuplicateIdempotencyRequestException
+     */
     private function processIdempotentRequest(Idempotency $idempotency, Request $request, Closure $next): Response
     {
         $idempotentRequest = $idempotency->getIdempotentRequest();
@@ -91,6 +95,14 @@ class IdempotencyMiddleware
 
         if ($this->isChecksumMismatched($idempotentRequest, $request)) {
             return $next($request);
+        }
+
+        if (IdempotencyConfig::get(IdempotencyConfig::DUPLICATE_HANDLING_KEY) === 'exception') {
+            throw new DuplicateIdempotencyRequestException(
+                $idempotency->getIdempotencyKey(),
+                $idempotency->getUserId(),
+                $idempotentRequest
+            );
         }
 
         return $this->responseFactory->make(
