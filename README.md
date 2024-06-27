@@ -9,4 +9,44 @@
 <a href="https://packagist.org/packages/algoyounes/idempotency"><img src="https://img.shields.io/packagist/l/algoyounes/idempotency" alt="License"></a>
 </p>
 
-The Laravel Idempotency Middleware package helps ensure idempotent operations in your Laravel applications. It prevents duplicate processing of the same request by caching responses and reusing them when necessary.
+Idempotency is a Laravel package that helps you make your requests idempotent. Idempotent requests are requests that can be safely retried without causing any side effects. This is useful when you're dealing with unreliable networks or when you want to prevent duplicate requests from being processed.
+
+## Installation
+
+You can install the package via composer:
+
+```bash
+composer require algoyounes/idempotency
+```
+
+## Usage
+
+To make a request idempotent, try to add something like `idempotency` middleware to the route or group of routes you want to protect. The middleware will check if the request is idempotent by looking for the `Idempotency-Key` header. If the header is present, the middleware will cache the response and reuse it for subsequent requests with the same key.
+
+```php
+Route::middleware('idempotency')->post('/orders', 'OrderController@store');
+```
+
+You can also add the middleware to a group of routes:
+
+```php
+Route::middleware('idempotency')->group(function () {
+    Route::post('/orders', 'OrderController@store');
+    Route::get('/orders/{id}', 'OrderController@show');
+});
+```
+
+## Configuration
+
+You can publish the configuration file using the following command:
+
+```bash
+php artisan vendor:publish --provider="AlgoYou\Idempotency\IdempotencyServiceProvider" --tag="config"
+```
+
+## TODO
+- [ ] Add unit and integration tests
+- [ ] Implement additional configuration options for more flexibility
+- [ ] Optimize performance for high-throughput systems.
+- [ ] Create demo applications to showcase the package's functionality.
+
