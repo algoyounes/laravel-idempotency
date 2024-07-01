@@ -12,11 +12,11 @@ class IdempotencyCacheManager
 {
     private const CACHE_KEY = 'idempotences:%s:users:%s:data';
     private const CACHE_TTL = 86400; // 24 hours
-    private const DEFAULT_MAX_LOCK_WAIT_TIME = 10; // 10 seconds
 
     public function __construct(
         private readonly CacheRepository $cacheRepository,
-        private readonly LockProvider $lockProvider
+        private readonly LockProvider $lockProvider,
+        private readonly IdempotencyConfig $config
     ) {
     }
 
@@ -27,7 +27,7 @@ class IdempotencyCacheManager
 
     private function getMaxLockWaitTime(): int
     {
-        return (int) IdempotencyConfig::get(IdempotencyConfig::MAX_LOCK_WAIT_TIME_KEY, self::DEFAULT_MAX_LOCK_WAIT_TIME);
+        return $this->config->getMaxLockWaitTime();
     }
 
     public function hasIdempotency(string $idempotencyKey, string $userId): bool
@@ -50,7 +50,7 @@ class IdempotencyCacheManager
         return $this->cacheRepository->put(
             $this->getCacheKey($userId, $idempotency->getIdempotencyKey()),
             $idempotency,
-            (int) IdempotencyConfig::get(IdempotencyConfig::CACHE_TTL_KEY, self::CACHE_TTL)
+            $this->config->getCacheTtl(self::CACHE_TTL)
         );
     }
 

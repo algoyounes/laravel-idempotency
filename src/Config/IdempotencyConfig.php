@@ -18,9 +18,106 @@ final class IdempotencyConfig
     public const CACHE_TTL_KEY = 'cache.ttl';
     public const CACHE_STORE_KEY = 'cache.store';
 
+    // Default values
+    private const DEFAULT_MAX_LOCK_WAIT_TIME = 10; // 10 seconds
+    private const DEFAULT_CACHE_TTL = 86400; // 24 hours
+    private const DEFAULT_CACHE_STORE = 'default';
+
+    /**
+     * @param  array<string>  $enforcedVerbs
+     * @param  array<class-string, string>  $userIdResolver
+     */
+    private function __construct(
+        private readonly bool $enabled,
+        private readonly string $idempotencyHeader,
+        private readonly string $relayedHeader,
+        private readonly array $enforcedVerbs,
+        private readonly string $duplicateHandling,
+        private readonly int $maxLockWaitTime,
+        private readonly array $userIdResolver,
+        private readonly string $unauthenticatedUserId,
+        private readonly int $cacheTtl,
+        private readonly string $cacheStore
+    ) {
+    }
+
     // @phpstan-ignore-next-line
-    public static function get(string $key, mixed $default = null)
+    public static function createFromArray(array $attributes): self
     {
-        return config(sprintf('idempotency.%s', $key), $default);
+        $get = static fn (string $key, int|bool|string|array|null $default = null) => $attributes[$key] ?? $default;
+
+        return new self(
+            $get(self::ENABLED_KEY, false),
+            $get(self::IDEMPOTENCY_HEADER_KEY),
+            $get(self::RELAYED_HEADER_KEY),
+            $get(self::ENFORCED_VERBS_KEY),
+            $get(self::DUPLICATE_HANDLING_KEY),
+            $get(self::MAX_LOCK_WAIT_TIME_KEY, self::DEFAULT_MAX_LOCK_WAIT_TIME),
+            $get(self::USER_ID_RESOLVER_KEY, []),
+            $get(self::UNAUTHENTICATED_USER_ID_KEY),
+            $get(self::CACHE_TTL_KEY, self::DEFAULT_CACHE_TTL),
+            $get(self::CACHE_STORE_KEY, self::DEFAULT_CACHE_STORE)
+        );
+    }
+
+    public function isEnabled(): bool
+    {
+        return $this->enabled;
+    }
+
+    public function isNotEnabled(): bool
+    {
+        return $this->enabled === false;
+    }
+
+    public function getIdempotencyHeader(): string
+    {
+        return $this->idempotencyHeader;
+    }
+
+    public function getRelayedHeader(): string
+    {
+        return $this->relayedHeader;
+    }
+
+    /**
+     * @return array<string>
+     */
+    public function getEnforcedVerbs(): array
+    {
+        return $this->enforcedVerbs;
+    }
+
+    public function getDuplicateHandling(): string
+    {
+        return $this->duplicateHandling;
+    }
+
+    public function getMaxLockWaitTime(): int
+    {
+        return $this->maxLockWaitTime;
+    }
+
+    /**
+     * @return array<class-string, string>
+     */
+    public function getUserIdResolver(): array
+    {
+        return $this->userIdResolver;
+    }
+
+    public function getUnauthenticatedUserId(): string
+    {
+        return $this->unauthenticatedUserId;
+    }
+
+    public function getCacheTtl(int $default = self::DEFAULT_CACHE_TTL): int
+    {
+        return $this->cacheTtl ?? $default;
+    }
+
+    public function getCacheStore(): string
+    {
+        return $this->cacheStore;
     }
 }

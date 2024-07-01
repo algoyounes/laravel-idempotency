@@ -8,10 +8,12 @@ use Illuminate\Contracts\Auth\Guard;
 readonly class UserIdResolver
 {
     private Guard $auth;
+    private IdempotencyConfig $config;
 
     public function __construct()
     {
         $this->auth = make(Guard::class);
+        $this->config = make(IdempotencyConfig::class);
     }
 
     public static function resolve(): string
@@ -21,8 +23,8 @@ readonly class UserIdResolver
 
     private function getUserId(): string
     {
-        $customResolver = IdempotencyConfig::get(IdempotencyConfig::USER_ID_RESOLVER_KEY);
-        if (is_array($customResolver) && count($customResolver) === 2) {
+        $customResolver = $this->config->getUserIdResolver();
+        if (count($customResolver) === 2) {
             return $this->getCustomUserId($customResolver);
         }
 
