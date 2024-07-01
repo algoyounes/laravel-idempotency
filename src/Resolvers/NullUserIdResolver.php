@@ -6,9 +6,16 @@ use AlgoYounes\Idempotency\Config\IdempotencyConfig;
 
 class NullUserIdResolver
 {
+    private static IdempotencyConfig $config;
+
+    public static function setConfig(IdempotencyConfig $config): void
+    {
+        self::$config = $config;
+    }
+
     public static function resolve(): string
     {
-        $value = IdempotencyConfig::get(IdempotencyConfig::UNAUTHENTICATED_USER_ID_KEY, 'guest');
+        $value = self::$config->getUnauthenticatedUserId();
         if (! is_string($value)) {
             return 'guest';
         }

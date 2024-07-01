@@ -19,7 +19,8 @@ class IdempotencyMiddleware
 {
     public function __construct(
         private readonly IdempotencyManager $idempotencyManager,
-        private readonly ResponseFactory $responseFactory
+        private readonly ResponseFactory $responseFactory,
+        private readonly IdempotencyConfig $config
     ) {
     }
 
@@ -28,7 +29,7 @@ class IdempotencyMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($this->isNotEnabled() || $this->isEnforcedVerb($request)) {
+        if ($this->config->isNotEnabled() || $this->isEnforcedVerb($request)) {
             return $next($request);
         }
 
@@ -66,19 +67,14 @@ class IdempotencyMiddleware
         return $response;
     }
 
-    private function isNotEnabled(): bool
-    {
-        return (bool) IdempotencyConfig::get(IdempotencyConfig::ENABLED_KEY, false) === false;
-    }
-
     private function isEnforcedVerb(Request $request): bool
     {
-        return in_array($request->getMethod(), (array) IdempotencyConfig::get(IdempotencyConfig::ENFORCED_VERBS_KEY), true);
+        return in_array($request->getMethod(), $this->config->getEnforcedVerbs(), true);
     }
 
     private function getIdempotencyKey(Request $request): ?string
     {
-        $idempotencyKey = $request->header(IdempotencyConfig::get(IdempotencyConfig::IDEMPOTENCY_HEADER_KEY));
+        $idempotencyKey = $request->header($this->config->getIdempotencyHeader());
 
         return is_string($idempotencyKey) ? $idempotencyKey : null;
     }
@@ -97,7 +93,7 @@ class IdempotencyMiddleware
             return $next($request);
         }
 
-        if (IdempotencyConfig::get(IdempotencyConfig::DUPLICATE_HANDLING_KEY) === 'exception') {
+        if ($this->config->getDuplicateHandling() === 'exception') {
             throw new DuplicateIdempotencyRequestException(
                 $idempotency->getIdempotencyKey(),
                 $idempotency->getUserId(),
@@ -110,7 +106,7 @@ class IdempotencyMiddleware
             $idempotency->getIdempotentResponse()->getStatus(),
             [
                 ...$idempotency->getIdempotentResponse()->getHeaders(),
-                IdempotencyConfig::get(IdempotencyConfig::RELAYED_HEADER_KEY) => $idempotency->getIdempotencyKey(),
+                $this->config->getRelayedHeader() => $idempotency->getIdempotencyKey(),
             ]
         );
     }
