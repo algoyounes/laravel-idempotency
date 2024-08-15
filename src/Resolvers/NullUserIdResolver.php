@@ -16,7 +16,7 @@ class NullUserIdResolver
     public static function resolve(): string
     {
         $value = self::$config->getUnauthenticatedUserId();
-        if (! is_string($value)) {
+        if ($value === '') {
             return 'guest';
         }
 
