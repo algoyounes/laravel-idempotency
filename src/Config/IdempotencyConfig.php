@@ -93,6 +93,11 @@ final class IdempotencyConfig
         return $this->duplicateHandling;
     }
 
+    public function isDuplicateHandlingException(): bool
+    {
+        return $this->duplicateHandling === 'exception';
+    }
+
     public function getMaxLockWaitTime(): int
     {
         return $this->maxLockWaitTime;

@@ -93,7 +93,7 @@ class IdempotencyMiddleware
             return $next($request);
         }
 
-        if ($this->config->getDuplicateHandling() === 'exception') {
+        if ($this->config->isDuplicateHandlingException()) {
             throw new DuplicateIdempotencyRequestException(
                 $idempotency->getIdempotencyKey(),
                 $idempotency->getUserId(),
@@ -121,6 +121,6 @@ class IdempotencyMiddleware
         $existingChecksum = $idempotentRequest->getChecksum();
         $currentChecksum = IdempotentRequest::createFromRequest($request)->getChecksum();
 
-        return $existingChecksum->equals($currentChecksum) === false;
+        return $existingChecksum->notEquals($currentChecksum);
     }
 }
