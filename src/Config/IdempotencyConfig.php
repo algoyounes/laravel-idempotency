@@ -25,7 +25,7 @@ final class IdempotencyConfig
 
     /**
      * @param  array<string>  $enforcedVerbs
-     * @param  array<class-string, string>  $userIdResolver
+     * @param  class-string|null  $userIdResolver
      */
     private function __construct(
         private readonly bool $enabled,
@@ -34,7 +34,7 @@ final class IdempotencyConfig
         private readonly array $enforcedVerbs,
         private string $duplicateHandling,
         private int $maxLockWaitTime,
-        private readonly array $userIdResolver,
+        private readonly ?string $userIdResolver,
         private readonly string $unauthenticatedUserId,
         private readonly int $cacheTtl,
         private readonly string $cacheStore
@@ -53,7 +53,7 @@ final class IdempotencyConfig
             $get(self::ENFORCED_VERBS_KEY),
             $get(self::DUPLICATE_HANDLING_KEY),
             $get(self::MAX_LOCK_WAIT_TIME_KEY, self::DEFAULT_MAX_LOCK_WAIT_TIME),
-            $get(self::USER_ID_RESOLVER_KEY, []),
+            $get(self::USER_ID_RESOLVER_KEY, null),
             $get(self::UNAUTHENTICATED_USER_ID_KEY),
             $get(self::CACHE_TTL_KEY, self::DEFAULT_CACHE_TTL),
             $get(self::CACHE_STORE_KEY, self::DEFAULT_CACHE_STORE)
@@ -104,9 +104,9 @@ final class IdempotencyConfig
     }
 
     /**
-     * @return array<class-string, string>
+     * @return class-string|null
      */
-    public function getUserIdResolver(): array
+    public function getUserIdResolver(): ?string
     {
         return $this->userIdResolver;
     }

@@ -1,7 +1,10 @@
 <?php
 
+use AlgoYounes\Idempotency\Config\IdempotencyConfig;
 use AlgoYounes\Idempotency\Exceptions\DuplicateIdempotencyRequestException;
 use AlgoYounes\Idempotency\Exceptions\LockWaitExceededException;
+use AlgoYounes\Idempotency\Tests\Feature\fixtures\CustomUserIdResolver;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Symfony\Component\HttpFoundation\Response;
 
 it('proceed with the request with idempotency', function () {
@@ -83,3 +86,30 @@ it('throws lock wait exceeded exception', function () {
     $this->expectException(LockWaitExceededException::class);
     $this->post('/account', [], ['Idempotency-Key' => '1234']);
 });
+
+it('request with custom user id resolver', function () {
+    $this->withoutExceptionHandling();
+
+    updateIdempotencyConfig($this->app, [
+        'idempotency.user_id_resolver' => CustomUserIdResolver::class,
+    ]);
+
+    $response = $this->post('/account', [], ['Idempotency-Key' => '1234']);
+
+    $this->assertTrue($this->idempotencyCacheManager->hasIdempotency('1234', 'custom-user-id'));
+    $response->assertStatus(Response::HTTP_OK);
+    $response->assertJson(['message' => 'success']);
+});
+
+function updateIdempotencyConfig($app, array $config): void
+{
+    config($config);
+
+    $app->singleton(IdempotencyConfig::class, function ($app) {
+        /** @var ConfigRepository $configRepository */
+        $configRepository = $app->make(ConfigRepository::class);
+        $config = (array) $configRepository->get('idempotency', []);
+
+        return IdempotencyConfig::createFromArray($config);
+    });
+}
