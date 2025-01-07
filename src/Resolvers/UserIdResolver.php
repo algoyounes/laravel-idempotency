@@ -3,6 +3,7 @@
 namespace AlgoYounes\Idempotency\Resolvers;
 
 use AlgoYounes\Idempotency\Config\IdempotencyConfig;
+use AlgoYounes\Idempotency\Contracts\ResolverContract;
 use Illuminate\Contracts\Auth\Guard;
 
 readonly class UserIdResolver
@@ -24,7 +25,7 @@ readonly class UserIdResolver
     private function getUserId(): string
     {
         $customResolver = $this->config->getUserIdResolver();
-        if (count($customResolver) === 2) {
+        if ($customResolver !== null) {
             return $this->getCustomUserId($customResolver);
         }
 
@@ -32,15 +33,15 @@ readonly class UserIdResolver
     }
 
     /**
-     * @param  array<class-string, string>  $customResolver
+     * @param  class-string  $customResolver
      */
-    private function getCustomUserId(array $customResolver): string
+    private function getCustomUserId(string $customResolver): string
     {
-        // @phpstan-ignore-next-line
-        [$class, $method] = $customResolver;
+        if (class_exists($customResolver) && is_a($customResolver, ResolverContract::class, true)) {
+            /** @var ResolverContract $resolver */
+            $resolver = app($customResolver);
 
-        if (class_exists($class) && method_exists($class, $method)) {
-            return app($class)->{$method}();
+            return $resolver->resolve();
         }
 
         return $this->getDefaultUserId();

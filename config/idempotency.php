@@ -90,13 +90,13 @@ return [
     |
     | This option allows you to define a custom resolver for the user ID.
     | By default, it uses the authenticated user's ID. To support config caching,
-    | define the resolver as a class and method pair.
+    | define the resolver as a class-string.
     |
     | Example:
-    | 'user_id_resolver' => [App\Resolvers\UserIdResolver::class, 'resolveUserId'],
+    | 'user_id_resolver' => App\Resolvers\UserIdResolver::class,
     |
     */
-    // 'user_id_resolver' => [App\Resolvers\UserIdResolver::class, 'resolveUserId'],
+    // 'user_id_resolver' => App\Resolvers\UserIdResolver::class,
 
     /*
     |--------------------------------------------------------------------------

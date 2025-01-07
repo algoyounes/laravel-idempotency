@@ -3,8 +3,9 @@
 namespace AlgoYounes\Idempotency\Resolvers;
 
 use AlgoYounes\Idempotency\Config\IdempotencyConfig;
+use AlgoYounes\Idempotency\Contracts\ResolverContract;
 
-class NullUserIdResolver
+class NullUserIdResolver implements ResolverContract
 {
     private static IdempotencyConfig $config;
 

@@ -43,3 +43,24 @@ You can publish the configuration file using the following command:
 ```bash
 php artisan vendor:publish --provider="AlgoYounes\Idempotency\IdempotencyServiceProvider" --tag="config"
 ```
+
+## Custom Resolver 🔧
+
+You can create your own resolver by implementing the `ResolveContract` interface. 
+This is useful when you want to store the cache in a different store or when you want to customize the key generation logic.
+
+```php
+use AlgoYounes\Idempotency\Contracts\ResolveContract;
+
+class CustomResolver implements ResolveContract
+{
+    public function resolve(): string
+    {
+        // Your custom logic here
+    }
+}
+
+// In the configuration file
+'user_id_resolver' => CustomResolver::class,
+
+```
