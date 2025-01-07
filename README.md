@@ -13,10 +13,16 @@ Idempotency is a Laravel package that helps you make your requests idempotent. I
 
 ## Installation
 
-You can install the package via composer:
+You can install the package via composer :
 
 ```bash
 composer require algoyounes/idempotency
+```
+
+You can publish the configuration file using the following command :
+
+```bash
+php artisan vendor:publish --provider="AlgoYounes\Idempotency\Providers\IdempotencyServiceProvider" --tag="config"
 ```
 
 ## Usage
@@ -34,14 +40,6 @@ Route::middleware('idempotency')->group(function () {
     Route::post('/orders', 'OrderController@store');
     Route::get('/orders/{id}', 'OrderController@show');
 });
-```
-
-## Configuration
-
-You can publish the configuration file using the following command:
-
-```bash
-php artisan vendor:publish --provider="AlgoYounes\Idempotency\Providers\IdempotencyServiceProvider" --tag="config"
 ```
 
 ## Custom Resolver 🔧
