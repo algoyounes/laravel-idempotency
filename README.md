@@ -41,7 +41,7 @@ Route::middleware('idempotency')->group(function () {
 You can publish the configuration file using the following command:
 
 ```bash
-php artisan vendor:publish --provider="AlgoYounes\Idempotency\IdempotencyServiceProvider" --tag="config"
+php artisan vendor:publish --provider="AlgoYounes\Idempotency\Providers\IdempotencyServiceProvider" --tag="config"
 ```
 
 ## Custom Resolver 🔧
