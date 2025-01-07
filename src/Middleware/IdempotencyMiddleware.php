@@ -22,8 +22,7 @@ class IdempotencyMiddleware
         private readonly IdempotencyManager $idempotencyManager,
         private readonly ResponseFactory $responseFactory,
         private readonly IdempotencyConfig $config
-    ) {
-    }
+    ) {}
 
     /**
      * @throws LockWaitExceededException|DuplicateIdempotencyRequestException

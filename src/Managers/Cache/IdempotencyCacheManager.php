@@ -7,6 +7,7 @@ use AlgoYounes\Idempotency\Entities\Idempotency;
 use AlgoYounes\Idempotency\Exceptions\LockWaitExceededException;
 use Illuminate\Contracts\Cache\LockProvider;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
+use Illuminate\Contracts\Cache\LockTimeoutException as LaravelLockTimeoutException;
 
 class IdempotencyCacheManager
 {
@@ -56,12 +57,16 @@ class IdempotencyCacheManager
 
     public function acquireLock(string $idempotencyKey, string $userId): bool
     {
-        return (bool) $this->lockProvider
-            ->lock(
-                $this->getCacheKey($idempotencyKey, $userId),
-                $this->getMaxLockWaitTime()
-            )
-            ->block($this->getMaxLockWaitTime());
+        try {
+            return (bool) $this->lockProvider
+                ->lock(
+                    $this->getCacheKey($idempotencyKey, $userId),
+                    $this->getMaxLockWaitTime()
+                )
+                ->block($this->getMaxLockWaitTime());
+        } catch (LaravelLockTimeoutException $e) {
+            return false;
+        }
     }
 
     public function releaseLock(string $idempotencyKey, string $userId): bool
