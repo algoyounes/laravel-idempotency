@@ -9,17 +9,17 @@
 <a href="https://packagist.org/packages/algoyounes/idempotency"><img src="https://img.shields.io/packagist/l/algoyounes/idempotency" alt="License"></a>
 </p>
 
-Idempotency is a Laravel package that helps you make your requests idempotent. Idempotent requests are requests that can be safely retried without causing any side effects. This is useful when you're dealing with unreliable networks or when you want to prevent duplicate requests from being processed.
+Idempotency is a Laravel package that helps you make your requests idempotent. Idempotent requests can be safely retried without causing any side effects. This is useful when you're dealing with unreliable networks or when you want to prevent duplicate requests from being processed.
 
 ## Installation
 
-You can install the package via composer :
+You can install the package via Composer:
 
 ```bash
 composer require algoyounes/idempotency
 ```
 
-You can publish the configuration file using the following command :
+You can publish the configuration file using the following command:
 
 ```bash
 php artisan vendor:publish --provider="AlgoYounes\Idempotency\Providers\IdempotencyServiceProvider" --tag="config"
@@ -27,7 +27,7 @@ php artisan vendor:publish --provider="AlgoYounes\Idempotency\Providers\Idempote
 
 ## Usage
 
-To make a request idempotent, try to add something like `idempotency` middleware to the route or group of routes you want to protect. The middleware will check if the request is idempotent by looking for the `Idempotency-Key` header. If the header is present, the middleware will cache the response and reuse it for subsequent requests with the same key.
+To request idempotent, try adding something like `idempotency` middleware to the route or group of routes you want to protect. The middleware will check if the request is idempotent by looking for the `Idempotency-Key` header. If the header is present, the middleware will cache the response and reuse it for subsequent requests with the same key.
 
 ```php
 Route::middleware('idempotency')->post('/orders', 'OrderController@store');
@@ -50,7 +50,7 @@ This is useful when you want to store the cache in a different store or when you
 ```php
 use AlgoYounes\Idempotency\Contracts\ResolveContract;
 
-class CustomResolver implements ResolveContract
+class CustomUserIdResolver implements ResolveContract
 {
     public function resolve(): string
     {
@@ -59,6 +59,6 @@ class CustomResolver implements ResolveContract
 }
 
 // In the configuration file
-'user_id_resolver' => CustomResolver::class,
+'user_id_resolver' => CustomUserIdResolver::class,
 
 ```
