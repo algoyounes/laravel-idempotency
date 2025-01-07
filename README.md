@@ -43,10 +43,3 @@ You can publish the configuration file using the following command:
 ```bash
 php artisan vendor:publish --provider="AlgoYounes\Idempotency\IdempotencyServiceProvider" --tag="config"
 ```
-
-## TODO
-- [ ] Add unit and integration tests
-- [ ] Implement additional configuration options for more flexibility
-- [ ] Optimize performance for high-throughput systems.
-- [ ] Create demo applications to showcase the package's functionality.
-

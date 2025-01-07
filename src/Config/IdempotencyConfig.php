@@ -32,8 +32,8 @@ final class IdempotencyConfig
         private readonly string $idempotencyHeader,
         private readonly string $relayedHeader,
         private readonly array $enforcedVerbs,
-        private readonly string $duplicateHandling,
-        private readonly int $maxLockWaitTime,
+        private string $duplicateHandling,
+        private int $maxLockWaitTime,
         private readonly array $userIdResolver,
         private readonly string $unauthenticatedUserId,
         private readonly int $cacheTtl,
@@ -93,6 +93,11 @@ final class IdempotencyConfig
         return $this->duplicateHandling;
     }
 
+    public function isDuplicateHandlingException(): bool
+    {
+        return $this->duplicateHandling === 'exception';
+    }
+
     public function getMaxLockWaitTime(): int
     {
         return $this->maxLockWaitTime;
@@ -119,5 +124,19 @@ final class IdempotencyConfig
     public function getCacheStore(): string
     {
         return $this->cacheStore;
+    }
+
+    public function setDuplicateHandling(string $duplicateHandling): self
+    {
+        $this->duplicateHandling = $duplicateHandling;
+
+        return $this;
+    }
+
+    public function setMaxLockWaitTime(int $maxLockWaitTime): self
+    {
+        $this->maxLockWaitTime = $maxLockWaitTime;
+
+        return $this;
     }
 }

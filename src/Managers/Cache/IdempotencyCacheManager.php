@@ -6,11 +6,12 @@ use AlgoYounes\Idempotency\Config\IdempotencyConfig;
 use AlgoYounes\Idempotency\Entities\Idempotency;
 use AlgoYounes\Idempotency\Exceptions\LockWaitExceededException;
 use Illuminate\Contracts\Cache\LockProvider;
+use Illuminate\Contracts\Cache\LockTimeoutException as LaravelLockTimeoutException;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 
 class IdempotencyCacheManager
 {
-    private const CACHE_KEY = 'idempotences:%s:users:%s:data';
+    private const CACHE_KEY = 'idempotence:%s:user:%s:data';
     private const CACHE_TTL = 86400; // 24 hours
 
     public function __construct(
@@ -45,10 +46,10 @@ class IdempotencyCacheManager
         return $idempotency;
     }
 
-    public function setIdempotency(string $userId, Idempotency $idempotency): bool
+    public function setIdempotency(Idempotency $idempotency): bool
     {
         return $this->cacheRepository->put(
-            $this->getCacheKey($userId, $idempotency->getIdempotencyKey()),
+            $this->getCacheKey($idempotency->getIdempotencyKey(), $idempotency->getUserId()),
             $idempotency,
             $this->config->getCacheTtl(self::CACHE_TTL)
         );
@@ -56,12 +57,16 @@ class IdempotencyCacheManager
 
     public function acquireLock(string $idempotencyKey, string $userId): bool
     {
-        return (bool) $this->lockProvider
-            ->lock(
-                $this->getCacheKey($idempotencyKey, $userId),
-                $this->getMaxLockWaitTime()
-            )
-            ->block($this->getMaxLockWaitTime());
+        try {
+            return (bool) $this->lockProvider
+                ->lock(
+                    $this->getCacheKey($idempotencyKey, $userId),
+                    $this->getMaxLockWaitTime()
+                )
+                ->block($this->getMaxLockWaitTime());
+        } catch (LaravelLockTimeoutException) {
+            return false;
+        }
     }
 
     public function releaseLock(string $idempotencyKey, string $userId): bool

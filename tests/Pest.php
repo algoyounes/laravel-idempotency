@@ -11,7 +11,7 @@
 |
 */
 
-// uses(Tests\TestCase::class)->in('Feature');
+uses(\AlgoYounes\Idempotency\Tests\TestCase::class)->in('Feature');
 
 /*
 |--------------------------------------------------------------------------

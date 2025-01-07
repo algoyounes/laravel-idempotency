@@ -33,6 +33,11 @@ final class Checksum implements Stringable
         );
     }
 
+    public function notEquals(Checksum $checksum): bool
+    {
+        return $this->equals($checksum) === false;
+    }
+
     public function getValue(): string
     {
         return $this->checksum;

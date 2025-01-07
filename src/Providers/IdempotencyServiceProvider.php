@@ -19,13 +19,13 @@ class IdempotencyServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->publishes([
-            __DIR__.'/config/idempotency.php' => config_path('idempotency.php'),
+            dirname(__DIR__, 2).'/config/idempotency.php' => config_path('idempotency.php'),
         ], 'config');
     }
 
     public function register(): void
     {
-        $this->mergeConfigFrom(__DIR__.'/config/idempotency.php', 'idempotency');
+        $this->mergeConfigFrom(dirname(__DIR__, 2).'/config/idempotency.php', 'idempotency');
 
         $this->app->singleton(
             IdempotencyConfig::class,
