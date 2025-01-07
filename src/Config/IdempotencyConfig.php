@@ -32,7 +32,7 @@ final class IdempotencyConfig
         private readonly string $idempotencyHeader,
         private readonly string $relayedHeader,
         private readonly array $enforcedVerbs,
-        private readonly string $duplicateHandling,
+        private string $duplicateHandling,
         private readonly int $maxLockWaitTime,
         private readonly array $userIdResolver,
         private readonly string $unauthenticatedUserId,
@@ -124,5 +124,12 @@ final class IdempotencyConfig
     public function getCacheStore(): string
     {
         return $this->cacheStore;
+    }
+
+    public function setDuplicateHandling(string $duplicateHandling): self
+    {
+        $this->duplicateHandling = $duplicateHandling;
+
+        return $this;
     }
 }

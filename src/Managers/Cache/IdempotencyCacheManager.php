@@ -10,7 +10,7 @@ use Illuminate\Contracts\Cache\Repository as CacheRepository;
 
 class IdempotencyCacheManager
 {
-    private const CACHE_KEY = 'idempotences:%s:users:%s:data';
+    private const CACHE_KEY = 'idempotences:%s:users:%s:data'; // TODO: improve the cache key format from plural to singular form
     private const CACHE_TTL = 86400; // 24 hours
 
     public function __construct(
@@ -45,10 +45,10 @@ class IdempotencyCacheManager
         return $idempotency;
     }
 
-    public function setIdempotency(string $userId, Idempotency $idempotency): bool
+    public function setIdempotency(Idempotency $idempotency): bool
     {
         return $this->cacheRepository->put(
-            $this->getCacheKey($userId, $idempotency->getIdempotencyKey()),
+            $this->getCacheKey($idempotency->getIdempotencyKey(), $idempotency->getUserId()),
             $idempotency,
             $this->config->getCacheTtl(self::CACHE_TTL)
         );

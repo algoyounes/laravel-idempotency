@@ -12,6 +12,7 @@ use AlgoYounes\Idempotency\Managers\IdempotencyManager;
 use AlgoYounes\Idempotency\Resolvers\UserIdResolver;
 use Closure;
 use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -27,9 +28,9 @@ class IdempotencyMiddleware
     /**
      * @throws LockWaitExceededException|DuplicateIdempotencyRequestException
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next): Response|JsonResponse
     {
-        if ($this->config->isNotEnabled() || $this->isEnforcedVerb($request)) {
+        if ($this->config->isNotEnabled() && $this->isEnforcedVerb($request) === false) {
             return $next($request);
         }
 
@@ -52,7 +53,7 @@ class IdempotencyMiddleware
         /** @var Response $response */
         $response = $next($request);
 
-        if (! $response->isSuccessful() || ! $response->isServerError()) {
+        if (! $response->isSuccessful() || $response->isServerError()) {
             $this->idempotencyManager->releaseLock($idempotencyKey, $userId);
 
             return $response;

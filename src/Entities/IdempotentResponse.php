@@ -2,6 +2,7 @@
 
 namespace AlgoYounes\Idempotency\Entities;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 
 final class IdempotentResponse
@@ -28,7 +29,7 @@ final class IdempotentResponse
         );
     }
 
-    public static function createFromResponse(Response $response): self
+    public static function createFromResponse(Response|JsonResponse $response): self
     {
         $attributes = [
             'body'    => (string) $response->getContent(),

@@ -70,7 +70,7 @@ return [
     | Requests with other verbs will pass through the middleware without checks.
     |
     */
-    'enforced_verbs' => ['POST', 'PUT', 'PATCH', 'DELETE'],
+    'enforced_verbs' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
 
     /*
     |--------------------------------------------------------------------------

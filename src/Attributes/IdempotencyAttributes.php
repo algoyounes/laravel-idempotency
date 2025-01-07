@@ -4,6 +4,7 @@ namespace AlgoYounes\Idempotency\Attributes;
 
 use AlgoYounes\Idempotency\Entities\IdempotentRequest;
 use AlgoYounes\Idempotency\Entities\IdempotentResponse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -12,7 +13,7 @@ class IdempotencyAttributes extends AbstractAttributes
     private IdempotentRequest $request;
     private IdempotentResponse $response;
 
-    public static function createFromHttpComponents(Request $request, Response $response): self
+    public static function createFromHttpComponents(Request $request, Response|JsonResponse $response): self
     {
         return (new self())
             ->setRequest(IdempotentRequest::createFromRequest($request))

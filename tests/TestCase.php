@@ -6,9 +6,9 @@ use AlgoYounes\Idempotency\Config\IdempotencyConfig;
 use AlgoYounes\Idempotency\Middleware\IdempotencyMiddleware;
 use AlgoYounes\Idempotency\Providers\IdempotencyServiceProvider;
 use Illuminate\Foundation\Auth\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Orchestra\Testbench\TestCase as BaseTestCase;
-use Illuminate\Http\Request;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -23,8 +23,19 @@ abstract class TestCase extends BaseTestCase
 
     protected function getEnvironmentSetUp($app): void
     {
-        // setup config
+        $this->config = app(IdempotencyConfig::class);
 
+        $app->singleton(\Illuminate\Contracts\Cache\LockProvider::class, function ($app) {
+            return $app->make(\Illuminate\Cache\ArrayStore::class);
+        });
+
+        $app->singleton('cache', function ($app) {
+            return new \Illuminate\Cache\Repository(
+                new \Illuminate\Cache\ArrayStore
+            );
+        });
+
+        // setup config
 
         // setup middleware
         $app['router']->aliasMiddleware('idempotency', IdempotencyMiddleware::class);
@@ -59,15 +70,15 @@ abstract class TestCase extends BaseTestCase
 
     protected function createDefaultUser(array $options = []): User
     {
-        $user = User::fill(
-            [
-                'id'    => 1,
-                'field' => 'test',
-                ...$options
-            ]
-        );
+        $user = new User();
         $user->unguard();
 
-        return $user;
+        return $user->fill(
+            [
+                'id'   => 1,
+                'field' => 'test',
+                ...$options,
+            ]
+        );
     }
 }

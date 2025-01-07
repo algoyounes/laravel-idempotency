@@ -39,7 +39,7 @@ class IdempotencyManager
             ->setAttributes($attributes)
             ->build();
 
-        return $this->idempotencyCacheManager->setIdempotency($userId, $idempotency);
+        return $this->idempotencyCacheManager->setIdempotency($idempotency);
     }
 
     public function acquireLock(string $idempotencyKey, string $userId): bool
