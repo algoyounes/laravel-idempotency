@@ -6,8 +6,8 @@ use AlgoYounes\Idempotency\Config\IdempotencyConfig;
 use AlgoYounes\Idempotency\Entities\Idempotency;
 use AlgoYounes\Idempotency\Exceptions\LockWaitExceededException;
 use Illuminate\Contracts\Cache\LockProvider;
-use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Illuminate\Contracts\Cache\LockTimeoutException as LaravelLockTimeoutException;
+use Illuminate\Contracts\Cache\Repository as CacheRepository;
 
 class IdempotencyCacheManager
 {
@@ -64,7 +64,7 @@ class IdempotencyCacheManager
                     $this->getMaxLockWaitTime()
                 )
                 ->block($this->getMaxLockWaitTime());
-        } catch (LaravelLockTimeoutException $e) {
+        } catch (LaravelLockTimeoutException) {
             return false;
         }
     }

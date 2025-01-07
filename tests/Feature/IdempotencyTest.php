@@ -83,4 +83,3 @@ it('throws lock wait exceeded exception', function () {
     $this->expectException(LockWaitExceededException::class);
     $this->post('/account', [], ['Idempotency-Key' => '1234']);
 });
-
