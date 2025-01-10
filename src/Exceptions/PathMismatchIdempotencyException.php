@@ -5,14 +5,14 @@ namespace AlgoYounes\Idempotency\Exceptions;
 use AlgoYounes\Idempotency\Entities\IdempotentRequest;
 use Exception;
 
-class DuplicateIdempotencyRequestException extends Exception
+class PathMismatchIdempotencyException extends Exception
 {
     public function __construct(
         private readonly string $idempotencyKey,
         private readonly string $userId,
         private readonly IdempotentRequest $idempotentRequest
     ) {
-        parent::__construct('duplicate idempotency request');
+        parent::__construct('path mismatched idempotency request');
     }
 
     public function getIdempotencyKey(): string
