@@ -1,8 +1,10 @@
 <?php
 
 use AlgoYounes\Idempotency\Config\IdempotencyConfig;
-use AlgoYounes\Idempotency\Exceptions\DuplicateIdempotencyRequestException;
+use AlgoYounes\Idempotency\Exceptions\CheckSumMismatchIdempotencyException;
+use AlgoYounes\Idempotency\Exceptions\DuplicateIdempotencyException;
 use AlgoYounes\Idempotency\Exceptions\LockWaitExceededException;
+use AlgoYounes\Idempotency\Exceptions\PathMismatchIdempotencyException;
 use AlgoYounes\Idempotency\Tests\Feature\fixtures\CustomUserIdResolver;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,13 +25,14 @@ it('add idempotency header only on repeated requests', function () {
 
     $idempotencyKey = 'unique-key-123';
     $response = $this->post('/user', ['field' => 'change'], ['Idempotency-Key' => $idempotencyKey]);
-    $response->assertHeaderMissing('Idempotency-Relayed');
-
-    $response = $this->post('/user', ['field' => 'change_again'], ['Idempotency-Key' => $idempotencyKey]);
     $response->assertHeader('Idempotency-Relayed', $idempotencyKey);
+
+    $response2 = $this->post('/user', ['field' => 'change'], ['Idempotency-Key' => $idempotencyKey]);
+    $response2->assertHeader('Idempotency-Relayed', $idempotencyKey);
+    $response2->assertJson($response->json());
 });
 
-it('throws exception on duplicate idempotency key', function () {
+it('throws exception on duplicate idempotency key with same payload', function () {
     $this->withoutExceptionHandling();
 
     $this->config->setDuplicateHandling('exception');
@@ -39,11 +42,41 @@ it('throws exception on duplicate idempotency key', function () {
 
     $idempotencyKey = 'unique-key-1234';
     $response = $this->post('/user', ['field' => 'change'], ['Idempotency-Key' => $idempotencyKey]);
-    $response->assertHeaderMissing('Idempotency-Relayed');
+    $response->assertHeader('Idempotency-Relayed', $idempotencyKey);
 
-    $this->expectException(DuplicateIdempotencyRequestException::class);
+    $this->expectException(DuplicateIdempotencyException::class);
+
+    $this->post('/user', ['field' => 'change'], ['Idempotency-Key' => $idempotencyKey]);
+});
+
+it('throws exception on duplicate idempotency key with different payload', function () {
+    $this->withoutExceptionHandling();
+
+    $user = $this->createDefaultUser(['field' => 'default']);
+    $this->actingAs($user);
+
+    $idempotencyKey = 'unique-key-12345';
+    $response = $this->post('/user', ['field' => 'change'], ['Idempotency-Key' => $idempotencyKey]);
+    $response->assertHeader('Idempotency-Relayed', $idempotencyKey);
+
+    $this->expectException(CheckSumMismatchIdempotencyException::class);
 
     $this->post('/user', ['field' => 'change_again'], ['Idempotency-Key' => $idempotencyKey]);
+});
+
+it('throws exception on duplicate idempotency key via different path', function () {
+    $this->withoutExceptionHandling();
+
+    $user = $this->createDefaultUser(['field' => 'default']);
+    $this->actingAs($user);
+
+    $idempotencyKey = 'unique-key-12345';
+    $response = $this->post('/user', ['field' => 'change'], ['Idempotency-Key' => $idempotencyKey]);
+    $response->assertHeader('Idempotency-Relayed', $idempotencyKey);
+
+    $this->expectException(PathMismatchIdempotencyException::class);
+
+    $this->post('/account', ['field' => 'change'], ['Idempotency-Key' => $idempotencyKey]);
 });
 
 it('request without idempotency key', function () {

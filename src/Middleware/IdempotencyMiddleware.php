@@ -6,8 +6,10 @@ use AlgoYounes\Idempotency\Attributes\IdempotencyAttributes;
 use AlgoYounes\Idempotency\Config\IdempotencyConfig;
 use AlgoYounes\Idempotency\Entities\Idempotency;
 use AlgoYounes\Idempotency\Entities\IdempotentRequest;
-use AlgoYounes\Idempotency\Exceptions\DuplicateIdempotencyRequestException;
+use AlgoYounes\Idempotency\Exceptions\CheckSumMismatchIdempotencyException;
+use AlgoYounes\Idempotency\Exceptions\DuplicateIdempotencyException;
 use AlgoYounes\Idempotency\Exceptions\LockWaitExceededException;
+use AlgoYounes\Idempotency\Exceptions\PathMismatchIdempotencyException;
 use AlgoYounes\Idempotency\Managers\IdempotencyManager;
 use AlgoYounes\Idempotency\Resolvers\UserIdResolver;
 use Closure;
@@ -26,7 +28,7 @@ class IdempotencyMiddleware
     }
 
     /**
-     * @throws LockWaitExceededException|DuplicateIdempotencyRequestException
+     * @throws LockWaitExceededException|DuplicateIdempotencyException
      */
     public function handle(Request $request, Closure $next): Response|JsonResponse
     {
@@ -43,15 +45,17 @@ class IdempotencyMiddleware
 
         $idempotency = $this->idempotencyManager->getIdempotency($idempotencyKey, $userId);
         if ($idempotency instanceof Idempotency) {
-            return $this->processIdempotentRequest($idempotency, $request, $next);
+            return $this->processIdempotentRequest($idempotency, $request);
         }
 
         if (! $this->idempotencyManager->acquireLock($idempotencyKey, $userId)) {
             $this->idempotencyManager->waitForLock($idempotencyKey, $userId);
         }
 
-        /** @var Response $response */
+        /** @var Response|JsonResponse $response */
         $response = $next($request);
+
+        $response->headers->set($this->config->getRelayedHeader(), $idempotencyKey);
 
         if (! $response->isSuccessful() || $response->isServerError()) {
             $this->idempotencyManager->releaseLock($idempotencyKey, $userId);
@@ -81,21 +85,30 @@ class IdempotencyMiddleware
     }
 
     /**
-     * @throws DuplicateIdempotencyRequestException
+     * @throws DuplicateIdempotencyException
+     * @throws CheckSumMismatchIdempotencyException|PathMismatchIdempotencyException
      */
-    private function processIdempotentRequest(Idempotency $idempotency, Request $request, Closure $next): Response
+    private function processIdempotentRequest(Idempotency $idempotency, Request $request): Response
     {
         $idempotentRequest = $idempotency->getIdempotentRequest();
         if ($this->isPathMismatched($idempotentRequest, $request)) {
-            return $next($request);
+            throw new PathMismatchIdempotencyException(
+                $idempotency->getIdempotencyKey(),
+                $idempotency->getUserId(),
+                $idempotentRequest
+            );
         }
 
         if ($this->isChecksumMismatched($idempotentRequest, $request)) {
-            return $next($request);
+            throw new CheckSumMismatchIdempotencyException(
+                $idempotency->getIdempotencyKey(),
+                $idempotency->getUserId(),
+                $idempotentRequest
+            );
         }
 
         if ($this->config->isDuplicateHandlingException()) {
-            throw new DuplicateIdempotencyRequestException(
+            throw new DuplicateIdempotencyException(
                 $idempotency->getIdempotencyKey(),
                 $idempotency->getUserId(),
                 $idempotentRequest

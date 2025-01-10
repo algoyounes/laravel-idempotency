@@ -8,10 +8,11 @@ use Illuminate\Http\Request;
 final class IdempotentRequest
 {
     /**
+     * @param  array<string, list<string|null>>  $body
      * @param  array<string, list<string|null>>  $headers
      */
     public function __construct(
-        private readonly string $body,
+        private readonly array $body,
         private readonly array $headers,
         private readonly string $path,
         private readonly Checksum $checksum
@@ -19,7 +20,7 @@ final class IdempotentRequest
     }
 
     /**
-     * @param  array{body: string, headers: array<string, list<string|null>>, path: string, checksum: Checksum}  $attributes
+     * @param  array{body: array<string, list<string|null>>, headers: array<string, list<string|null>>, path: string, checksum: Checksum}  $attributes
      */
     public static function createFromArray(array $attributes): self
     {
@@ -35,7 +36,7 @@ final class IdempotentRequest
     {
         $attributes = [
             'path'    => $request->path(),
-            'body'    => (string) $request->getContent(),
+            'body'    => array_filter($request->getPayload()->all()),
             'headers' => $request->headers->all(),
         ];
 
@@ -44,7 +45,10 @@ final class IdempotentRequest
         return self::createFromArray($attributes);
     }
 
-    public function getBody(): string
+    /**
+     * @return array<string, list<string|null>>
+     */
+    public function getBody(): array
     {
         return $this->body;
     }
@@ -68,7 +72,7 @@ final class IdempotentRequest
     }
 
     /**
-     * @return array{body: string, headers: array<string, list<string|null>>, path: string, checksum: Checksum}
+     * @return array{body: array<string, list<string|null>>, headers: array<string, list<string|null>>, path: string, checksum: Checksum}
      */
     public function toArray(): array
     {
