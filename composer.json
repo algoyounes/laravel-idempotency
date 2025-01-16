@@ -32,7 +32,9 @@
     },
     "suggest": {
         "illuminate/support": "for the Laravel integration",
-        "illuminate/contracts": "for the Laravel integration"
+        "illuminate/contracts": "for the Laravel integration",
+        "illuminate/http": "for the Laravel integration",
+        "illuminate/foundation": "for the Laravel integration"
     },
     "require-dev": {
         "laravel/framework": "^11.0",
