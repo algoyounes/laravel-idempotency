@@ -91,7 +91,7 @@ class IdempotencyMiddleware
     private function processIdempotentRequest(Idempotency $idempotency, Request $request): Response
     {
         $idempotentRequest = $idempotency->getIdempotentRequest();
-        if ($this->isPathMismatched($idempotentRequest, $request)) {
+        if ($idempotentRequest->isPathMismatched($request->path())) {
             throw new PathMismatchIdempotencyException(
                 $idempotency->getIdempotencyKey(),
                 $idempotency->getUserId(),
@@ -123,11 +123,6 @@ class IdempotencyMiddleware
                 $this->config->getRelayedHeader() => $idempotency->getIdempotencyKey(),
             ]
         );
-    }
-
-    private function isPathMismatched(IdempotentRequest $idempotentRequest, Request $request): bool
-    {
-        return $idempotentRequest->getPath() !== $request->path();
     }
 
     private function isChecksumMismatched(IdempotentRequest $idempotentRequest, Request $request): bool

@@ -66,6 +66,11 @@ final class IdempotentRequest
         return $this->path;
     }
 
+    public function isPathMismatched(string $path): bool
+    {
+        return $this->getPath() !== $path;
+    }
+
     public function getChecksum(): Checksum
     {
         return $this->checksum;
