@@ -3,30 +3,19 @@
 namespace AlgoYounes\Idempotency\Exceptions;
 
 use AlgoYounes\Idempotency\Entities\IdempotentRequest;
-use Exception;
 
-class PathMismatchIdempotencyException extends Exception
+class PathMismatchIdempotencyException extends IdempotencyException
 {
     public function __construct(
-        private readonly string $idempotencyKey,
-        private readonly string $userId,
-        private readonly IdempotentRequest $idempotentRequest
+        protected string $idempotencyKey,
+        protected string $userId,
+        protected IdempotentRequest $idempotentRequest,
     ) {
-        parent::__construct('path mismatched idempotency request');
-    }
-
-    public function getIdempotencyKey(): string
-    {
-        return $this->idempotencyKey;
-    }
-
-    public function getUserId(): string
-    {
-        return $this->userId;
-    }
-
-    public function getIdempotentRequest(): IdempotentRequest
-    {
-        return $this->idempotentRequest;
+        parent::__construct(
+            $idempotencyKey,
+            $userId,
+            $idempotentRequest,
+            'path mismatched idempotency request'
+        );
     }
 }
