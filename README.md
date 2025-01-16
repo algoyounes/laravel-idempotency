@@ -11,6 +11,17 @@
 
 Idempotency is a Laravel package that helps you make your requests idempotent. Idempotent requests can be safely retried without causing any side effects. This is useful when you're dealing with unreliable networks or when you want to prevent duplicate requests from being processed.
 
+## Features ✨
+
+- **Idempotent Requests**: Ensure that requests can be safely retried without side effects.
+- **Middleware Integration**: Easily add `idempotency` middleware to routes or route groups.
+- **Customizable Cache**: Configure cache TTL and store for idempotency keys.
+- **Duplicate Handling**: Choose between replaying cached responses or throwing exceptions for duplicate requests.
+- **Custom Resolvers**: Implement custom logic for resolving user IDs or generating cache keys.
+- **Header-Based Idempotency**: Use the `Idempotency-Key` header to identify requests.
+- **Race Condition Handling**: Prevent race conditions with configurable lock wait times.
+- **Unauthenticated Support**: Define a default user ID name for unauthenticated requests.
+
 ## Installation
 
 You can install the package via Composer:
@@ -24,6 +35,22 @@ You can publish the configuration file using the following command:
 ```bash
 php artisan vendor:publish --provider="AlgoYounes\Idempotency\Providers\IdempotencyServiceProvider" --tag="config"
 ```
+
+Here are the available options in the configuration file:
+
+| Option | Default Value                               | Description |
+| --- |---------------------------------------------| --- |
+| `enable` | `true`                                      | Enable or disable the idempotency middleware. |
+| `cache.ttl` | `86400` _(1 Day)_                           | The time-to-live for idempotency keys in minutes. |
+| `cache.store` | `default`                                   | The cache store to use for idempotency keys. |
+| `idempotency_header` | `Idempotency-Key`                           | The header to use for idempotency keys. |
+| `idempotency_relayed_header` | `Idempotency-Relayed`                       | The header to use for relaying idempotency keys. |
+| `duplicate_handling` | `replay`                                    | The action to take when a duplicate request is detected. Options are `replay` or `throw`. |
+| `enforced_verbs` | `['GET', 'POST', 'PUT', 'PATCH', 'DELETE']` | The HTTP verbs to enforce idempotency on. |
+| `max_lock_wait_time` | `10` _(10 seconds)_                         | The maximum time to wait for a lock in seconds. |
+| `user_id_resolver` | `null`                                      | The user ID resolver to use for generating cache keys. |
+| `unauthenticated_user_id` | `guest`                                     | The default user ID name for unauthenticated requests. |
+
 
 ## Usage
 
@@ -60,5 +87,4 @@ class CustomUserIdResolver implements ResolveContract
 
 // In the configuration file
 'user_id_resolver' => CustomUserIdResolver::class,
-
 ```
