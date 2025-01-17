@@ -37,7 +37,7 @@ Provide any additional context, such as testing instructions, edge cases, or con
 *
 
 ## Checklist ✅
-Ensure the following tasks are completed before submitting the PR:
+Ensure the following tasks are completed before set the PR status to `Ready for Review`:
 - [ ] Code is properly formatted and linted.
 - [ ] Tests have been added or updated to cover the changes.
 - [ ] Documentation has been updated _(if applicable and related)_.
