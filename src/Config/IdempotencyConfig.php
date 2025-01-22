@@ -21,7 +21,7 @@ final class IdempotencyConfig
     // Default values
     private const DEFAULT_MAX_LOCK_WAIT_TIME = 10; // 10 seconds
     private const DEFAULT_CACHE_TTL = 86400; // 24 hours
-    private const DEFAULT_CACHE_STORE = 'default';
+    public const DEFAULT_CACHE_STORE = 'default';
 
     /**
      * @param  array<string>  $enforcedVerbs

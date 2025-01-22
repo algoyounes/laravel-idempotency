@@ -63,7 +63,7 @@ class IdempotencyServiceProvider extends ServiceProvider
     private function getCacheStoreName(): string
     {
         $cacheStore = $this->getConfig()->getCacheStore();
-        if ($cacheStore === 'default') {
+        if ($cacheStore === IdempotencyConfig::DEFAULT_CACHE_STORE) {
             // @phpstan-ignore-next-line
             return config('cache.default');
         }
