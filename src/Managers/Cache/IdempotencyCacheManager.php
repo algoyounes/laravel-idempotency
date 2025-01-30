@@ -11,7 +11,7 @@ use Illuminate\Contracts\Cache\Repository as CacheRepository;
 
 class IdempotencyCacheManager
 {
-    private const CACHE_KEY = 'idempotence:%s:user:%s:data';
+    private const CACHE_KEY = 'idempotence:%s:user:%s';
     private const CACHE_TTL = 86400; // 24 hours
 
     public function __construct(
