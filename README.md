@@ -40,16 +40,16 @@ Here are the available options in the configuration file:
 
 | Option | Default Value                               | Description |
 | --- |---------------------------------------------| --- |
-| `enable` | `true`                                      | Enable or disable the idempotency middleware. |
-| `cache.ttl` | `86400` _(1 Day)_                           | The time-to-live for idempotency keys in minutes. |
-| `cache.store` | `default`                                   | The cache store to use for idempotency keys. |
-| `idempotency_header` | `Idempotency-Key`                           | The header to use for idempotency keys. |
-| `idempotency_relayed_header` | `Idempotency-Relayed`                       | The header to use for relaying idempotency keys. |
-| `duplicate_handling` | `replay`                                    | The action to take when a duplicate request is detected. Options are `replay` or `throw`. |
-| `enforced_verbs` | `['GET', 'POST', 'PUT', 'PATCH', 'DELETE']` | The HTTP verbs to enforce idempotency on. |
-| `max_lock_wait_time` | `10` _(10 seconds)_                         | The maximum time to wait for a lock in seconds. |
-| `user_id_resolver` | `null`                                      | The user ID resolver to use for generating cache keys. |
-| `unauthenticated_user_id` | `guest`                                     | The default user ID name for unauthenticated requests. |
+| `enable` | `true`                                      | Enable or disable the idempotency middleware |
+| `cache.ttl` | `86400` _(1 Day)_                           | The time-to-live for idempotency keys in minutes |
+| `cache.store` | `default`                                   | The cache store to use for idempotency keys |
+| `idempotency_header` | `Idempotency-Key`                           | The header to use for idempotency keys |
+| `idempotency_relayed_header` | `Idempotency-Relayed`                       | The header for relaying idempotency keys |
+| `duplicate_handling` | `replay`                                    | The action to take when a duplicate request is detected. Options are `replay` or `throw`|
+| `enforced_verbs` | `['GET', 'POST', 'PUT', 'PATCH', 'DELETE']` | The HTTP verbs to enforce idempotency on |
+| `max_lock_wait_time` | `10` _(10 seconds)_                         | The maximum time to wait for a lock in seconds |
+| `user_id_resolver` | `null`                                      | The user ID resolver to use for generating cache keys |
+| `unauthenticated_user_id` | `guest`                                     | The default user ID name for unauthenticated requests |
 
 
 ## Usage
@@ -71,7 +71,7 @@ Route::middleware('idempotency')->group(function () {
 
 ## Custom Resolver 🔧
 
-You can create your own resolver by implementing the `ResolveContract` interface. 
+You can create your resolver by implementing the `ResolveContract` interface. 
 This is useful when you want to store the cache in a different store or when you want to customize the key generation logic.
 
 ```php
@@ -88,3 +88,11 @@ class CustomUserIdResolver implements ResolveContract
 // In the configuration file
 'user_id_resolver' => CustomUserIdResolver::class,
 ```
+
+## Contributing
+
+Thank you for considering contributing to the Circuit Breaker package! Please check the [CONTRIBUTING](CONTRIBUTING.md) file for more details.
+
+## License
+
+The Circuit Breaker package is open-sourced software licensed under the [MIT license](LICENSE).
