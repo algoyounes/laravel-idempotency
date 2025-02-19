@@ -126,6 +126,11 @@ final class IdempotencyConfig
         return $this->cacheStore;
     }
 
+    public function isDefaultCacheStore(): bool
+    {
+        return $this->getCacheStore() === self::DEFAULT_CACHE_STORE;
+    }
+
     public function setDuplicateHandling(string $duplicateHandling): self
     {
         $this->duplicateHandling = $duplicateHandling;
