@@ -13,7 +13,7 @@ class Idempotency
 
     public static function create(string $userId, string $idempotencyKey, IdempotencyAttributes $idempotencyAttributes): self
     {
-        return (new self())
+        return (new self)
             ->setUserId($userId)
             ->setIdempotencyKey($idempotencyKey)
             ->setIdempotentRequest($idempotencyAttributes->getRequest())

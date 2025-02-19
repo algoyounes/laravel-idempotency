@@ -14,8 +14,7 @@ final class IdempotentResponse
         private readonly string $body,
         private readonly int $status,
         private readonly array $headers
-    ) {
-    }
+    ) {}
 
     /**
      * @param  array{body: string, status: int, headers: array<string, list<string|null>>}  $attributes

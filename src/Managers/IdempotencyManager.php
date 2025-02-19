@@ -13,8 +13,7 @@ class IdempotencyManager
 {
     public function __construct(
         private readonly IdempotencyCacheManager $idempotencyCacheManager
-    ) {
-    }
+    ) {}
 
     public function getIdempotency(string $idempotencyKey, string $userId): ?Idempotency
     {

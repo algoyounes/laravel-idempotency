@@ -8,9 +8,7 @@ final class Checksum implements Stringable
 {
     private const HASHING_ALGORITHM = 'sha256';
 
-    private function __construct(private readonly string $checksum)
-    {
-    }
+    private function __construct(private readonly string $checksum) {}
 
     /**
      * @param  array<string, mixed>  $attributes

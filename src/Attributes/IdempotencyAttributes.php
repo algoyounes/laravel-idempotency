@@ -15,7 +15,7 @@ class IdempotencyAttributes extends AbstractAttributes
 
     public static function createFromHttpComponents(Request $request, Response|JsonResponse $response): self
     {
-        return (new self())
+        return (new self)
             ->setRequest(IdempotentRequest::createFromRequest($request))
             ->setResponse(IdempotentResponse::createFromResponse($response));
     }

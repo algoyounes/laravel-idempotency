@@ -13,7 +13,7 @@ class IdempotencyBuilder
 
     public static function create(): self
     {
-        return new self();
+        return new self;
     }
 
     public function setUserId(string $userId): self

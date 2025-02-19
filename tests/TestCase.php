@@ -67,7 +67,7 @@ abstract class TestCase extends BaseTestCase
 
     protected function createDefaultUser(array $options = []): User
     {
-        $user = new User();
+        $user = new User;
         $user->unguard();
 
         return $user->fill(

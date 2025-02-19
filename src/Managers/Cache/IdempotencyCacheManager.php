@@ -18,8 +18,7 @@ class IdempotencyCacheManager
         private readonly CacheRepository $cacheRepository,
         private readonly LockProvider $lockProvider,
         private readonly IdempotencyConfig $config
-    ) {
-    }
+    ) {}
 
     private function getCacheKey(string $idempotencyKey, string $userId): string
     {
@@ -96,6 +95,6 @@ class IdempotencyCacheManager
             $tries++;
         }
 
-        throw new LockWaitExceededException();
+        throw new LockWaitExceededException;
     }
 }

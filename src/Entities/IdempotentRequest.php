@@ -16,8 +16,7 @@ final class IdempotentRequest
         private readonly array $headers,
         private readonly string $path,
         private readonly Checksum $checksum
-    ) {
-    }
+    ) {}
 
     /**
      * @param  array{body: array<string, list<string|null>>, headers: array<string, list<string|null>>, path: string, checksum: Checksum}  $attributes

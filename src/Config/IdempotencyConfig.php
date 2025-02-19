@@ -38,8 +38,7 @@ final class IdempotencyConfig
         private readonly string $unauthenticatedUserId,
         private readonly int $cacheTtl,
         private readonly string $cacheStore
-    ) {
-    }
+    ) {}
 
     // @phpstan-ignore-next-line
     public static function createFromArray(array $attributes): self

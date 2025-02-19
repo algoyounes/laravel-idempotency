@@ -19,7 +19,7 @@ readonly class UserIdResolver
 
     public static function resolve(): string
     {
-        return (new self())->getUserId();
+        return (new self)->getUserId();
     }
 
     private function getUserId(): string
