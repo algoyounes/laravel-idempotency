@@ -2,6 +2,10 @@
 
 All notable changes to `idempotency` will be documented in this file
 
+## v1.0.2 - 2025-02-21
+
+**Full Changelog**: https://github.com/algoyounes/idempotency/compare/v1.0.0...v1.0.2
+
 ## v1.0.0 - 2025-02-01
 
 🎉 **Idempotency v1.0.0** is here!
