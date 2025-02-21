@@ -4,12 +4,14 @@ namespace AlgoYounes\Idempotency\Providers;
 
 use AlgoYounes\Idempotency\Config\IdempotencyConfig;
 use AlgoYounes\Idempotency\Managers\Cache\IdempotencyCacheManager;
+use AlgoYounes\Idempotency\Middleware\IdempotencyMiddleware;
 use AlgoYounes\Idempotency\Resolvers\NullUserIdResolver;
 use Illuminate\Contracts\Cache\Factory as CacheFactory;
 use Illuminate\Contracts\Cache\LockProvider;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Http\Kernel;
 use Illuminate\Support\ServiceProvider;
 
 class IdempotencyServiceProvider extends ServiceProvider
@@ -21,6 +23,8 @@ class IdempotencyServiceProvider extends ServiceProvider
         $this->publishes([
             dirname(__DIR__, 2).'/config/idempotency.php' => config_path('idempotency.php'),
         ], 'config');
+
+        $this->configMiddleware();
     }
 
     public function register(): void
@@ -81,5 +85,10 @@ class IdempotencyServiceProvider extends ServiceProvider
         $config = ($app ?? $this->app)->make(IdempotencyConfig::class);
 
         return $this->config = $config;
+    }
+
+    private function configMiddleware(): void
+    {
+        make(Kernel::class)->prependMiddleware(IdempotencyMiddleware::class);
     }
 }
