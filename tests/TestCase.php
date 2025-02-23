@@ -4,7 +4,6 @@ namespace AlgoYounes\Idempotency\Tests;
 
 use AlgoYounes\Idempotency\Config\IdempotencyConfig;
 use AlgoYounes\Idempotency\Managers\Cache\IdempotencyCacheManager;
-use AlgoYounes\Idempotency\Middleware\IdempotencyMiddleware;
 use AlgoYounes\Idempotency\Providers\IdempotencyServiceProvider;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
@@ -34,8 +33,6 @@ abstract class TestCase extends BaseTestCase
                 new \Illuminate\Cache\ArrayStore
             );
         });
-
-        $app['router']->aliasMiddleware('idempotency', IdempotencyMiddleware::class);
 
         $this->config = app(IdempotencyConfig::class);
         $this->idempotencyCacheManager = app(IdempotencyCacheManager::class);

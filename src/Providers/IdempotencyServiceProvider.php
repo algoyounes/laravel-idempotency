@@ -12,11 +12,17 @@ use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Http\Kernel;
+use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
 
 class IdempotencyServiceProvider extends ServiceProvider
 {
     private ?IdempotencyConfig $config = null;
+
+    /** @var array<string, class-string> */
+    private array $routeMiddleware = [
+        'idempotency' => IdempotencyMiddleware::class,
+    ];
 
     public function boot(): void
     {
@@ -90,5 +96,12 @@ class IdempotencyServiceProvider extends ServiceProvider
     private function configMiddleware(): void
     {
         make(Kernel::class)->prependMiddleware(IdempotencyMiddleware::class);
+
+        /** @var Router $router */
+        $router = $this->app->make('router');
+
+        foreach ($this->routeMiddleware as $alias => $middleware) {
+            $router->aliasMiddleware($alias, $middleware);
+        }
     }
 }
