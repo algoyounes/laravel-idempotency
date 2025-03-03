@@ -26,19 +26,9 @@ Does this PR introduce any breaking changes? If yes, please describe them and pr
 - [ ] Yes
 - [ ] No
 
-## Screenshots/Visuals 📸
-If applicable, include screenshots, GIFs, or other visuals to demonstrate the changes.
-
-*
-
-## Additional Context 📌
-Provide any additional context, such as testing instructions, edge cases, or considerations for reviewers.
-
-*
-
 ## Checklist ✅
-Ensure the following tasks are completed before set the PR status to `Ready for Review`:
-- [ ] Code is properly formatted and linted.
-- [ ] Tests have been added or updated to cover the changes.
-- [ ] Documentation has been updated _(if applicable and related)_.
-- [ ] PR title and description are clear and descriptive.
+Ensure the following tasks are completed before setting the PR status to `Ready for Review`:
+- [ ] PR title and description are clear and descriptive
+- [ ] Code is properly formatted and linted
+- [ ] Tests have been added or updated to cover the changes
+- [ ] Documentation has been updated _(if applicable and related)_
