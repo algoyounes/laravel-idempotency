@@ -9,7 +9,7 @@
 <a href="https://packagist.org/packages/algoyounes/idempotency"><img src="https://img.shields.io/packagist/l/algoyounes/idempotency" alt="License"></a>
 </p>
 
-Idempotency is a Laravel package that helps you make your requests idempotent. Idempotent requests can be safely retried without causing any side effects. This is useful when you're dealing with unreliable networks or when you want to prevent duplicate requests from being processed.
+**Idempotency** is a Laravel package that helps you make your requests idempotent. Idempotent requests can be safely retried without causing any side effects. This is useful when you're dealing with unreliable networks or when you want to prevent duplicate requests from being processed.
 
 ## Features ✨
 
