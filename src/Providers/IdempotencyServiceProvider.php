@@ -26,17 +26,48 @@ class IdempotencyServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $this->publishes([
-            dirname(__DIR__, 2).'/config/idempotency.php' => config_path('idempotency.php'),
-        ], 'config');
-
+        $this->publishConfig();
         $this->configMiddleware();
     }
 
     public function register(): void
     {
-        $this->mergeConfigFrom(dirname(__DIR__, 2).'/config/idempotency.php', 'idempotency');
+        $this->registerConfig();
+        $this->registerBindings();
 
+        NullUserIdResolver::setConfig($this->getConfig());
+    }
+
+    // Boot methods
+
+    private function publishConfig(): void
+    {
+        $this->publishes([
+            dirname(__DIR__, 2).'/config/idempotency.php' => config_path('idempotency.php'),
+        ], 'config');
+    }
+
+    private function configMiddleware(): void
+    {
+        make(Kernel::class)->prependMiddleware(IdempotencyMiddleware::class);
+
+        /** @var Router $router */
+        $router = $this->app->make('router');
+
+        foreach ($this->routeMiddleware as $alias => $middleware) {
+            $router->aliasMiddleware($alias, $middleware);
+        }
+    }
+
+    // Register methods
+
+    private function registerConfig(): void
+    {
+        $this->mergeConfigFrom(dirname(__DIR__, 2).'/config/idempotency.php', 'idempotency');
+    }
+
+    private function registerBindings(): void
+    {
         $this->app->singleton(
             IdempotencyConfig::class,
             function (Application $app): IdempotencyConfig {
@@ -59,9 +90,8 @@ class IdempotencyServiceProvider extends ServiceProvider
         );
 
         $this->app->bind(CacheRepository::class, fn (Application $app): CacheRepository => $this->getCacheRepository($app));
-
-        NullUserIdResolver::setConfig($this->getConfig());
     }
+
     private function getCacheRepository(Application $app): CacheRepository
     {
         /** @var CacheFactory $cacheFactory */
@@ -91,17 +121,5 @@ class IdempotencyServiceProvider extends ServiceProvider
         $config = ($app ?? $this->app)->make(IdempotencyConfig::class);
 
         return $this->config = $config;
-    }
-
-    private function configMiddleware(): void
-    {
-        make(Kernel::class)->prependMiddleware(IdempotencyMiddleware::class);
-
-        /** @var Router $router */
-        $router = $this->app->make('router');
-
-        foreach ($this->routeMiddleware as $alias => $middleware) {
-            $router->aliasMiddleware($alias, $middleware);
-        }
     }
 }
