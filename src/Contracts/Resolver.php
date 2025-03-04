@@ -2,7 +2,7 @@
 
 namespace AlgoYounes\Idempotency\Contracts;
 
-interface ResolverContract
+interface Resolver
 {
     public static function resolve(): string;
 }

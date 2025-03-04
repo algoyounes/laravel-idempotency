@@ -3,7 +3,7 @@
 namespace AlgoYounes\Idempotency\Resolvers;
 
 use AlgoYounes\Idempotency\Config\IdempotencyConfig;
-use AlgoYounes\Idempotency\Contracts\ResolverContract;
+use AlgoYounes\Idempotency\Contracts\Resolver;
 use Illuminate\Contracts\Auth\Guard;
 
 readonly class UserIdResolver
@@ -37,8 +37,8 @@ readonly class UserIdResolver
      */
     private function getCustomUserId(string $customResolver): string
     {
-        if (class_exists($customResolver) && is_a($customResolver, ResolverContract::class, true)) {
-            /** @var ResolverContract $resolver */
+        if (class_exists($customResolver) && is_a($customResolver, Resolver::class, true)) {
+            /** @var Resolver $resolver */
             $resolver = app($customResolver);
 
             return $resolver->resolve();
