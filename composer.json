@@ -1,10 +1,21 @@
 {
-    "name": "algoyounes/laravel-idempotency",
+    "name": "algoyounes/idempotency",
     "description": "Laravel Idempotency Middleware package to prevent duplicate requests",
     "keywords": [
+        "laravel",
         "laravel idempotency",
-        "php idempotency",
-        "idemopotency"
+        "idempotency",
+        "idempotent",
+        "middleware",
+        "duplicate requests",
+        "api",
+        "prevent duplicate api requests",
+        "laravel middleware",
+        "laravel api idempotency",
+        "http idempotency",
+        "duplicate submission prevention",
+        "request throttling",
+        "php idempotency"
     ],
     "type": "library",
     "license": "MIT",
