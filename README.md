@@ -71,13 +71,13 @@ Route::middleware('idempotency')->group(function () {
 
 ## Custom Resolver 🔧
 
-You can create your resolver by implementing the `ResolveContract` interface. 
+You can create your resolver by implementing the `Resolver` interface. 
 This is useful when you want to store the cache in a different store or when you want to customize the key generation logic.
 
 ```php
-use AlgoYounes\Idempotency\Contracts\ResolveContract;
+use AlgoYounes\Idempotency\Contracts\Resolver;
 
-class CustomUserIdResolver implements ResolveContract
+class CustomUserIdResolver implements Resolver
 {
     public function resolve(): string
     {
