@@ -2,6 +2,10 @@
 
 All notable changes to `idempotency` will be documented in this file
 
+## v1.0.5 - 2025-03-05
+
+**Full Changelog**: https://github.com/algoyounes/laravel-idempotency/compare/v1.0.4...v1.0.5
+
 ## v1.0.4 - 2025-03-03
 
 ### Changes :
