@@ -45,7 +45,7 @@ Here are the available options in the configuration file:
 | `cache.store` | `default`                                   | The cache store to use for idempotency keys |
 | `idempotency_header` | `Idempotency-Key`                           | The header to use for idempotency keys |
 | `idempotency_relayed_header` | `Idempotency-Relayed`                       | The header for relaying idempotency keys |
-| `duplicate_handling` | `replay`                                    | The action to take when a duplicate request is detected. Options are `replay` or `throw`|
+| `duplicate_handling` | `replay`                                    | The action to take when a duplicate request is detected. Options are `replay` or `exception`|
 | `enforced_verbs` | `['GET', 'POST', 'PUT', 'PATCH', 'DELETE']` | The HTTP verbs to enforce idempotency on |
 | `max_lock_wait_time` | `10` _(10 seconds)_                         | The maximum time to wait for a lock in seconds |
 | `user_id_resolver` | `null`                                      | The user ID resolver to use for generating cache keys |
