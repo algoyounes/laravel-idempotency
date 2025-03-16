@@ -18,9 +18,9 @@ final class Checksum implements Stringable
         return new self(
             hash(
                 self::HASHING_ALGORITHM,
-                json_encode(
+                (string) json_encode(
                     $attributes,
-                    JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR
+                    JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
                 )
             )
         );
