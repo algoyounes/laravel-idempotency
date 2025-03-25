@@ -42,9 +42,11 @@ class IdempotencyServiceProvider extends ServiceProvider
 
     private function publishConfig(): void
     {
-        $this->publishes([
-            dirname(__DIR__, 2).'/config/idempotency.php' => config_path('idempotency.php'),
-        ], 'config');
+        if ($this->app->runningInConsole()) {
+            $this->publishes([
+                dirname(__DIR__, 2).'/config/idempotency.php' => config_path('idempotency.php'),
+            ], 'config');
+        }
     }
 
     private function configMiddleware(): void
