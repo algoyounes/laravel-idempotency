@@ -2,6 +2,16 @@
 
 All notable changes to `idempotency` will be documented in this file
 
+## v1.0.7 - 2025-03-27
+
+### Changes
+
+- chore: add console check to publishes method
+- chore(CheckSum): normalize JSON encoding with UNESCAPED_SLASHES and UNESCAPED_UNICODE
+- fix(Checksum): remove JSON_PARTIAL_OUTPUT_ON_ERROR to enforce data integrity
+
+**Full Changelog**: https://github.com/algoyounes/laravel-idempotency/compare/v1.0.6...v1.0.7
+
 ## v1.0.5 - 2025-03-05
 
 **Full Changelog**: https://github.com/algoyounes/laravel-idempotency/compare/v1.0.4...v1.0.5
