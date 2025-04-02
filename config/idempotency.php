@@ -56,7 +56,7 @@ return [
     | This option defines how to handle duplicate requests.
     | Available options:
     | - replay: Sends the same response seen previously.
-    | - exception: Throws a DuplicateIdempotencyRequestException.
+    | - exception: Throws a DuplicateIdempotencyException.
     |
     */
     'duplicate_handling' => 'replay',
@@ -81,7 +81,7 @@ return [
     | to be acquired in case of a race condition.
     |
     */
-    'max_lock_wait_time' => 10,
+    'max_lock_wait_time' => 10, // 10 seconds
 
     /*
     |--------------------------------------------------------------------------
