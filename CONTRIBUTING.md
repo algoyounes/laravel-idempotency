@@ -12,7 +12,7 @@ Please review these guidelines before submitting any pull requests.
 
 ## Guidelines
 
-* Please ensure the coding style running `composer lint`.
+* Please ensure the coding style running `composer test:lint`.
 * Send a coherent commit history, making sure each individual commit in your pull request is meaningful.
 * You may need to [rebase](https://git-scm.com/book/en/v2/Git-Branching-Rebasing) to avoid merge conflicts.
 * Please remember that we follow [SemVer](http://semver.org/).
@@ -34,8 +34,15 @@ Before starting development, please ensure that [GNU Aspell](https://en.wikipedi
 
 Lint your code:
 ```bash
-composer lint
+composer test:lint
 ```
+
+Fix your code style:
+```bash
+composer fix:lint
+```
+_fix:lint or fix to apply automatic fixes for linting and code refactoring_
+
 ## Tests
 
 Run all tests:
