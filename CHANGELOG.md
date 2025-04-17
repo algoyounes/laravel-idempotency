@@ -2,6 +2,14 @@
 
 All notable changes to `idempotency` will be documented in this file
 
+## v1.1.0 - 2025-04-17
+
+### What's Changed
+
+* feat: add support php8.4 by @algoyounes in https://github.com/algoyounes/laravel-idempotency/pull/7
+
+**Full Changelog**: https://github.com/algoyounes/laravel-idempotency/compare/v1.0.7...v1.1.0
+
 ## v1.0.7 - 2025-03-27
 
 ### Changes
