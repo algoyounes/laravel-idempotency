@@ -10,8 +10,8 @@ final class IdempotencyConfig
     public const DEFAULT_CACHE_STORE = 'default';
     public const DEFAULT_IDEMPOTENCY_HEADER = 'Idempotency-Key';
     public const DEFAULT_RELAYED_HEADER = 'Idempotency-Relayed';
-    public const DEFAULT_ENFORCED_VERBS = ['POST', 'PUT', 'PATCH', 'DELETE'];
-    public const DEFAULT_DUPLICATE_HANDLING = 'exception';
+    public const DEFAULT_ENFORCED_VERBS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
+    public const DEFAULT_DUPLICATE_HANDLING = 'replay';
     public const DEFAULT_UNAUTHENTICATED_USER_ID = 'guest';
 
     /**
