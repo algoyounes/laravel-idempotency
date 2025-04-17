@@ -8,6 +8,9 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
+/**
+ * @extends AbstractAttributes<string, array<string, mixed>>
+ */
 class IdempotencyAttributes extends AbstractAttributes
 {
     private IdempotentRequest $request;

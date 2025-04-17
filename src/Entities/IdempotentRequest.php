@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 final class IdempotentRequest
 {
     /**
-     * @param  array<string, list<string|null>>  $body
+     * @param  array<string|int, list<string|null>|mixed>  $body
      * @param  array<string, list<string|null>>  $headers
      */
     public function __construct(
@@ -19,7 +19,12 @@ final class IdempotentRequest
     ) {}
 
     /**
-     * @param  array{body: array<string, list<string|null>>, headers: array<string, list<string|null>>, path: string, checksum: Checksum}  $attributes
+     * @param  array{
+     *     body: array<string|int, list<string|null>|mixed>,
+     *     headers: array<string, list<string|null>>,
+     *     path: string,
+     *     checksum: Checksum
+     * }  $attributes
      */
     public static function createFromArray(array $attributes): self
     {
@@ -45,7 +50,7 @@ final class IdempotentRequest
     }
 
     /**
-     * @return array<string, list<string|null>>
+     * @return array<string|int, list<string|null>|mixed>
      */
     public function getBody(): array
     {
@@ -76,7 +81,12 @@ final class IdempotentRequest
     }
 
     /**
-     * @return array{body: array<string, list<string|null>>, headers: array<string, list<string|null>>, path: string, checksum: Checksum}
+     * @return array{
+     *     body: array<string|int,
+     *     list<string|null>|mixed>,
+     *     headers: array<string, list<string|null>>,
+     *     path: string, checksum: Checksum
+     * }
      */
     public function toArray(): array
     {

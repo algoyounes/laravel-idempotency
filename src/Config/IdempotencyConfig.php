@@ -4,24 +4,15 @@ namespace AlgoYounes\Idempotency\Config;
 
 final class IdempotencyConfig
 {
-    // Idempotency config keys
-    public const ENABLED_KEY = 'enabled';
-    public const IDEMPOTENCY_HEADER_KEY = 'idempotency_header';
-    public const RELAYED_HEADER_KEY = 'idempotency_relayed_header';
-    public const ENFORCED_VERBS_KEY = 'enforced_verbs';
-    public const DUPLICATE_HANDLING_KEY = 'duplicate_handling';
-    public const MAX_LOCK_WAIT_TIME_KEY = 'max_lock_wait_time';
-    public const USER_ID_RESOLVER_KEY = 'user_id_resolver';
-    public const UNAUTHENTICATED_USER_ID_KEY = 'unauthenticated_user_id';
-
-    // Cache config keys
-    public const CACHE_TTL_KEY = 'cache.ttl';
-    public const CACHE_STORE_KEY = 'cache.store';
-
     // Default values
     private const DEFAULT_MAX_LOCK_WAIT_TIME = 10; // 10 seconds
     private const DEFAULT_CACHE_TTL = 86400; // 24 hours
     public const DEFAULT_CACHE_STORE = 'default';
+    public const DEFAULT_IDEMPOTENCY_HEADER = 'Idempotency-Key';
+    public const DEFAULT_RELAYED_HEADER = 'Idempotency-Relayed';
+    public const DEFAULT_ENFORCED_VERBS = ['POST', 'PUT', 'PATCH', 'DELETE'];
+    public const DEFAULT_DUPLICATE_HANDLING = 'exception';
+    public const DEFAULT_UNAUTHENTICATED_USER_ID = 'guest';
 
     /**
      * @param  array<string>  $enforcedVerbs
@@ -40,22 +31,32 @@ final class IdempotencyConfig
         private readonly string $cacheStore
     ) {}
 
-    // @phpstan-ignore-next-line
+    /**
+     * @param array{
+     *     enabled?: bool,
+     *     idempotency_header?: string,
+     *     idempotency_relayed_header?: string,
+     *     enforced_verbs?: string[],
+     *     duplicate_handling?: string,
+     *     max_lock_wait_time?: int,
+     *     user_id_resolver?: class-string|null,
+     *     unauthenticated_user_id?: string,
+     *     cache?: array{ttl?: int, store?: string}
+     * } $attributes
+     */
     public static function createFromArray(array $attributes): self
     {
-        $get = static fn (string $key, int|bool|string|array|null $default = null) => $attributes[$key] ?? $default;
-
         return new self(
-            $get(self::ENABLED_KEY, false),
-            $get(self::IDEMPOTENCY_HEADER_KEY),
-            $get(self::RELAYED_HEADER_KEY),
-            $get(self::ENFORCED_VERBS_KEY),
-            $get(self::DUPLICATE_HANDLING_KEY),
-            $get(self::MAX_LOCK_WAIT_TIME_KEY, self::DEFAULT_MAX_LOCK_WAIT_TIME),
-            $get(self::USER_ID_RESOLVER_KEY, null),
-            $get(self::UNAUTHENTICATED_USER_ID_KEY),
-            $get(self::CACHE_TTL_KEY, self::DEFAULT_CACHE_TTL),
-            $get(self::CACHE_STORE_KEY, self::DEFAULT_CACHE_STORE)
+            enabled: $attributes['enabled'] ?? false,
+            idempotencyHeader: $attributes['idempotency_header'] ?? self::DEFAULT_IDEMPOTENCY_HEADER,
+            relayedHeader: $attributes['idempotency_relayed_header'] ?? self::DEFAULT_RELAYED_HEADER,
+            enforcedVerbs: $attributes['enforced_verbs'] ?? self::DEFAULT_ENFORCED_VERBS,
+            duplicateHandling: $attributes['duplicate_handling'] ?? self::DEFAULT_DUPLICATE_HANDLING,
+            maxLockWaitTime: $attributes['max_lock_wait_time'] ?? self::DEFAULT_MAX_LOCK_WAIT_TIME,
+            userIdResolver: $attributes['user_id_resolver'] ?? null,
+            unauthenticatedUserId: $attributes['unauthenticated_user_id'] ?? self::DEFAULT_UNAUTHENTICATED_USER_ID,
+            cacheTtl: $attributes['cache']['ttl'] ?? self::DEFAULT_CACHE_TTL,
+            cacheStore: $attributes['cache']['store'] ?? self::DEFAULT_CACHE_STORE,
         );
     }
 
@@ -117,7 +118,7 @@ final class IdempotencyConfig
 
     public function getCacheTtl(int $default = self::DEFAULT_CACHE_TTL): int
     {
-        return $this->cacheTtl ?? $default;
+        return $this->cacheTtl > 0 ? $this->cacheTtl : $default;
     }
 
     public function getCacheStore(): string
