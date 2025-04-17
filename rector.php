@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
 use Rector\Php82\Rector\Class_\ReadOnlyClassRector;
-use Rector\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenRector;
 use Rector\Privatization\Rector\ClassMethod\PrivatizeFinalClassMethodRector;
 use Rector\Privatization\Rector\MethodCall\PrivatizeLocalGetterToPropertyRector;
 use Rector\Privatization\Rector\Property\PrivatizeFinalClassPropertyRector;
@@ -24,7 +23,6 @@ return static function (RectorConfig $rectorConfig): void {
 
     $rectorConfig->skip(
         [
-            FinalizeClassesWithoutChildrenRector::class,
             PrivatizeLocalGetterToPropertyRector::class,
             ReadOnlyClassRector::class,
         ]

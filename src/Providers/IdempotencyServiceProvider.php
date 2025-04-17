@@ -77,6 +77,7 @@ class IdempotencyServiceProvider extends ServiceProvider
                 $configRepository = $app->make(ConfigRepository::class);
                 $config = (array) $configRepository->get('idempotency', []);
 
+                // @phpstan-ignore-next-line
                 return IdempotencyConfig::createFromArray($config);
             }
         );

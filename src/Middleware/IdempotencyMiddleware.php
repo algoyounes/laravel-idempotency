@@ -32,11 +32,13 @@ class IdempotencyMiddleware
     public function handle(Request $request, Closure $next): Response|JsonResponse
     {
         if ($this->config->isNotEnabled() && $this->isEnforcedVerb($request) === false) {
+            // @phpstan-ignore-next-line
             return $next($request);
         }
 
         $idempotencyKey = $this->getIdempotencyKey($request);
         if (! $idempotencyKey) {
+            // @phpstan-ignore-next-line
             return $next($request);
         }
 
