@@ -91,7 +91,7 @@ class CustomUserIdResolver implements Resolver
 
 ## Contributing
 
-Thank you for considering contributing to the Idempotency package! Please check the [CONTRIBUTING](CONTRIBUTING.md) file for more details.
+Thank you for considering contributing to the Idempotency package. For more details, please check the [CONTRIBUTING](CONTRIBUTING.md) file.
 
 ## License
 
