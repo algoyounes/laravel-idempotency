@@ -8,13 +8,14 @@ on:
 
 jobs:
   unit-tests:
-    name: PHP ${{ matrix.php }}
+    name: PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }}
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: true
       matrix:
         php: [8.2, 8.3, 8.4]
+        laravel: [11, 12]
         dependency-version: [prefer-stable]
 
     steps:
@@ -42,12 +43,12 @@ jobs:
           path: |
             ${{ env.COMPOSER_CACHE_DIR }}
             vendor
-          key: php-${{ matrix.php }}-deps-${{ hashFiles('composer.json', 'composer.lock') }}
+          key: php-${{ matrix.php }}-laravel-${{ matrix.laravel }}-deps-${{ hashFiles('composer.json', 'composer.lock') }}
           restore-keys: |
-            php-${{ matrix.php }}-deps-
+            php-${{ matrix.php }}-laravel-${{ matrix.laravel }}-deps-
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest
+        run: composer update --prefer-dist --no-progress --with="laravel/framework:^${{ matrix.laravel }}"
 
       - name: Run Rector (Dry Run)
         run: composer test:refactor
