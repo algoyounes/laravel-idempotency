@@ -85,10 +85,12 @@ class IdempotencyServiceProvider extends ServiceProvider
         $this->app->singleton(
             IdempotencyCacheManager::class,
             function (Application $app): IdempotencyCacheManager {
-                /** @var LockProvider $lockProvider */
-                $lockProvider = $app->make(LockProvider::class);
+                $cacheRepository = $this->getCacheRepository($app);
 
-                return new IdempotencyCacheManager($this->getCacheRepository($app), $lockProvider, $this->getConfig($app));
+                /** @var LockProvider $lockProvider */
+                $lockProvider = $cacheRepository->getStore();
+
+                return new IdempotencyCacheManager($cacheRepository, $lockProvider, $this->getConfig($app));
             }
         );
 

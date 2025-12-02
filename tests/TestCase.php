@@ -24,10 +24,6 @@ abstract class TestCase extends BaseTestCase
 
     protected function getEnvironmentSetUp($app): void
     {
-        $app->singleton(\Illuminate\Contracts\Cache\LockProvider::class, function ($app) {
-            return $app->make(\Illuminate\Cache\ArrayStore::class);
-        });
-
         $app->singleton('cache', function ($app) {
             return new \Illuminate\Cache\Repository(
                 new \Illuminate\Cache\ArrayStore
